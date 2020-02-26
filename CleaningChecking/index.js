@@ -111,7 +111,7 @@ function addData() {
   data.seats = [];
   for(var i = 0; i < sname.length; i++) {
     if(sname[i] != "") {
-      if(document.getElementById("check_"+i).checked) data.seats.push(i);
+      if(!document.getElementById("check_"+i).checked) data.seats.push(i);
     }
   }
   data.jobs = [];
