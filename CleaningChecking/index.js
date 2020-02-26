@@ -10,7 +10,7 @@ var firebaseConfig = {
   firebase.initializeApp(firebaseConfig);
   var database = firebase.database();
 
-  var name = [
+  var sname = [
     "",
     "程琬貽",
     "邱子珆",
@@ -43,20 +43,59 @@ var firebaseConfig = {
     "劉皓恩"
   ];
 
-document.body.addEventListener("load", function(){
-  genSeatsChecks();
-});
+var jobs = [
+  "",
+  "內掃-掃地",  /* 1 */
+  "無",
+  "內掃-掃地",
+  "內掃-",
+  "外掃-",
+  "內掃-",  /* 6 */
+  "內掃-",
+  "內掃-",
+  "內掃-",
+  "內掃-",
+  "內掃-",  /* 11 */
+  "內掃-",
+  "內掃-",
+  "內掃-",
+  "內掃-",
+  "內掃-",  /* 16 */
+  "內掃-",
+  "內掃-",
+  "內掃-",
+  "內掃-",
+  "內掃-",  /* 21 */
+  "內掃-",
+  "內掃-",
+  "內掃-",
+  "內掃-",
+  "內掃-",  /* 26 */
+  "內掃-",
+  "內掃-",
+  "內掃-"
+];
 
 
 function genSeatsChecks() {
   var seats = document.getElementById("seats");
   seats.innerHTML = "";
-  for(var i = 0; i < name.length; i++) {
-    if(name[i] != "") {
+  for(var i = 0; i < sname.length; i++) {
+    if(sname[i] != "") {
       seats.innerHTML += `
                 <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" id="check_${i}">
-                    <label class="custom-control-label" for="customCheck1">${i} 號 ${name[i]}</label>
+                    <label class="custom-control-label" for="check_${i}">${i} 號 ${sname[i]}</label>
+                </div>
+      `;
+    }
+  }
+  for(var i = 0; i < jobs.length; i++) {
+    if(jobs[i] != "無" && jobs[i].substring(0,1) == "內") {
+      document.getElementById("jobs").innerHTML += `
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="job_${i}">
+                    <label class="custom-control-label" for="job_${i}">${i} 號 ${sname[i]}: ${jobs[i]}</label>
                 </div>
       `;
     }
@@ -64,14 +103,26 @@ function genSeatsChecks() {
 }
 
 function addData() {
+  var btn = document.getElementById("btn");
+  btn.disabled = true;
+  btn.innerHTML = "傳送中";
   var data = {};
-  data.comment = document.getElementById("comment");
+  data.comment = document.getElementById("comment").value;
   data.seats = [];
-  for(var i = 0; i < name.length; i++) {
-    if(name[i] != "") {
-      if(document.getElementById("check_"+i).checked) seats.push(i);
+  for(var i = 0; i < sname.length; i++) {
+    if(sname[i] != "") {
+      if(document.getElementById("check_"+i).checked) data.seats.push(i);
+    }
+  }
+  data.jobs = [];
+  for(var i = 0; i < jobs.length; i++) {
+    if(jobs[i] != "無" && jobs[i].substring(0,1) == "內") {
+      if(!document.getElementById("job_"+i).checked) data.jobs.push(i);
     }
   }
   var d = new Date();
-  database.ref("CleaningChecking/" + d.getFullYear() + "-" + (""+(d.getMonth()+1)).padStart(2, "0") + "-" + (""+d.getDate()).padStart(2, "0")).set(data).then(()=>{alert("success!")});
+  database.ref("CleanChecking/" + d.getFullYear() + "-" + (""+(d.getMonth()+1)).padStart(2, "0") + "-" + (""+d.getDate()).padStart(2, "0") + "-" + Date.now()).set(data).then(()=>{
+    alert("已記錄!");
+    btn.innerHTML = "完成";
+  });
 }

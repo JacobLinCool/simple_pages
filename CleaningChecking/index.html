@@ -11,7 +11,7 @@
     <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-database.js"></script>
 </head>
-<body>
+<body onload="genSeatsChecks()">
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="./">打掃檢查表單</a>
@@ -30,14 +30,19 @@
 
     <div style="margin: 10px;">
         <div>
-            <legend>未搬座位打勾:</legend>
+            <legend>未搬椅子打勾:</legend>
             <div class="form-group" id="seats">
+            </div>
+
+            <legend>打掃完成打勾:</legend>
+            <div class="form-group" id="jobs">
+                
             </div>
             <div class="form-group">
                 <label for="exampleTextarea">備註</label>
                 <textarea class="form-control" id="comment" rows="6"></textarea>
             </div>
-            <button type="button" class="btn btn-primary" onclick="addData()">送出</button>
+            <button id="btn" type="button" class="btn btn-primary" onclick="addData()">送出</button>
         </div>
     </div>
 
