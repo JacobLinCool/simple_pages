@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>遊戲畫面</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    
+    <canvas id="game" width="900" height="1500"></canvas>
+    <div class="hidden" id="hr"></div>
+    <style>
+        body {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            text-align: center;
+            margin-left: 0;
+            margin-right: 0;
+        }
+        canvas {
+            display: inline-block;
+            max-height: 95%;
+            border:1px solid #d3d3d3;
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
+    <script>
+        var hidden = document.getElementById("hr");
+        var gameResources = [];
+        gameResources.push(document.createElement("img"));
+        gameResources[0].src = "https://www.pikpng.com/pngl/b/67-674310_swimming-png.png";
+        hidden.appendChild(gameResources[0]);
+        
+        var game = document.getElementById("game");
+        var ctx = game.getContext("2d");
+        
+        // 上底色
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, 900, 1600);
+        ctx.fillStyle = "black";
+        /* ctx.fillRect(0, 0, 900, 1600); */
+        
+        // 上下區分隔線
+        ctx.beginPath();
+        ctx.moveTo(0, 600);
+        ctx.lineTo(900, 600);
+        ctx.stroke();
+        
+        
+        // 上區圖形
+        gameResources[0].addEventListener("load", function() {
+            // 敵方
+            ctx.drawImage(gameResources[0], 150, 100, 100, 100);
+            ctx.drawImage(gameResources[0], 300, 100, 100, 100);
+            ctx.drawImage(gameResources[0], 450, 100, 100, 100);
+            ctx.drawImage(gameResources[0], 600, 100, 100, 100);
+            ctx.drawImage(gameResources[0], 750, 100, 100, 100);
+            
+            // 我方
+            ctx.drawImage(gameResources[0], 50, 400, 150, 150);
+            ctx.drawImage(gameResources[0], 250, 400, 150, 150);
+            ctx.drawImage(gameResources[0], 450, 400, 150, 150);
+        });
+        
+        // 下區圖形 背景
+        ctx.beginPath();
+        ctx.arc(450,1050,430,0,2*Math.PI);
+        ctx.strokeStyle = "rgba(0, 0, 0, 0.4)";
+        ctx.lineWidth = 15;
+        ctx.stroke();
+        
+        // 下區圖形 外圈
+        var outerPoints = [[300, 700], [600, 700], [800, 900], [800, 1200], [600, 1400], [300, 1400], [100, 1200], [100, 900]];
+        ctx.beginPath();
+        ctx.moveTo(outerPoints[outerPoints.length-1][0], outerPoints[outerPoints.length-1][1]);
+        for(var i = 0; i < outerPoints.length; i++) {
+            ctx.lineTo(outerPoints[i][0], outerPoints[i][1]);
+        }
+        ctx.strokeStyle = "rgba(0, 0, 0, 0.2)";
+        ctx.lineWidth = 15;
+        ctx.stroke();
+        for(var i = 0; i < outerPoints.length; i++) {
+            ctx.beginPath();
+            ctx.arc(outerPoints[i][0], outerPoints[i][1], 20, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+        
+        // 下區圖形 內圈
+        var innerPoints = [[300, 900], [600, 900], [600, 1200], [300, 1200], [450, 1050]];
+        ctx.beginPath();
+        ctx.moveTo(innerPoints[innerPoints.length-2][0], innerPoints[innerPoints.length-2][1]);
+        for(var i = 0; i < innerPoints.length-1; i++) {
+            ctx.lineTo(innerPoints[i][0], innerPoints[i][1]);
+        }
+        ctx.strokeStyle = "rgba(0, 0, 0, 0.2)";
+        ctx.lineWidth = 15;
+        ctx.stroke();
+        for(var i = 0; i < innerPoints.length; i++) {
+            ctx.beginPath();
+            ctx.arc(innerPoints[i][0], innerPoints[i][1], 20, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+        
+        
+    </script>
+    
+</body>
+</html>
