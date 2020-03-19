@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DDOS 測試工具 - 研究用</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div class="">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="./">DDOS 測試工具</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar1" aria-controls="navbar1" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbar1">
+                <ul class="navbar-nav mr-auto">
+                </ul>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="form">
+                <fieldset>
+                    <legend>研究用 DDOS 測試工具</legend>
+                    <p style="color: red">只允許使用在自己的網站測試防禦能力！<br>使用此程式代表你同意你會自己負責所有的衍生問題。</p>
+                    <div class="form-group">
+                        <label for="blocks">Blocks</label>
+                        <input type="number" class="form-control" id="blocks" placeholder="Number of Attack Blocks">
+                    </div>
+                    <div class="form-group">
+                        <label for="attacks">Attacks</label>
+                        <input type="number" class="form-control" id="attacks" placeholder="Number of Attack Time of each Block">
+                    </div>
+                    <div class="form-group">
+                        <label for="target">Target</label>
+                        <input type="text" class="form-control" id="target" placeholder="Target URL">
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="Attack(document.getElementById('blocks').value, document.getElementById('attacks').value, document.getElementById('target').value)">測試</button>
+                </fieldset>
+            </div>
+        </div>
+        <!-- Main Body End -->
+    </div>
+    
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/flatly/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="index.js"></script>
+</body>
+</html>
