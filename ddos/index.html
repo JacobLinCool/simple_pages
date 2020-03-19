@@ -24,11 +24,11 @@
                     <legend>研究用 DDOS 測試工具</legend>
                     <p style="color: red">只允許使用在自己的網站測試防禦能力！<br>使用此程式代表你同意你會自己負責所有的衍生問題。</p>
                     <div class="form-group">
-                        <label for="blocks">Blocks</label>
+                        <label for="blocks">Blocks, max: 50</label>
                         <input type="number" class="form-control" id="blocks" placeholder="Number of Attack Blocks" value="10">
                     </div>
                     <div class="form-group">
-                        <label for="attacks">Attacks</label>
+                        <label for="attacks">Attacks, max: 50</label>
                         <input type="number" class="form-control" id="attacks" placeholder="Number of Attack Time of each Block" value="30">
                     </div>
                     <div class="form-group">
@@ -39,6 +39,7 @@
                 </fieldset>
             </div>
             <div>
+                <br>
                 <p id="result">尚未進行測試</p>
             </div>
         </div>
