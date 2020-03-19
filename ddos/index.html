@@ -35,8 +35,11 @@
                         <label for="target">Target</label>
                         <input type="text" class="form-control" id="target" placeholder="Target URL">
                     </div>
-                    <button type="button" class="btn btn-primary" onclick="Attack(document.getElementById('blocks').value, document.getElementById('attacks').value, document.getElementById('target').value)">測試</button>
+                    <button type="button" class="btn btn-primary" onclick="atk(document.getElementById('blocks').value, document.getElementById('attacks').value, document.getElementById('target').value)">測試</button>
                 </fieldset>
+            </div>
+            <div>
+                <p id="result"></p>
             </div>
         </div>
         <!-- Main Body End -->
