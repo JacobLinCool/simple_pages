@@ -1,6 +1,6 @@
-function atk(a, b, c) {
+function atk(a, b, c, d) {
     document.getElementById('result').innerHTML = "測試進行中";
-    Attack(parseInt(a), parseInt(b), c, "ddos", {update: function(now){document.getElementById('result').innerHTML = "已完成： " + now}}).then(s => {document.getElementById('result').innerHTML = "完成全部共"+s.success+"次測試";});
+    Attack(parseInt(a), parseInt(b), c, d, {update: function(now){document.getElementById('result').innerHTML = "已完成： " + now}}).then(s => {document.getElementById('result').innerHTML = "完成全部共"+s.success+"次測試";});
 }
 async function Attack(blocks=10, attacks=10, target, type="ddos", func={update: function(){}}) {
     var now = 0;
