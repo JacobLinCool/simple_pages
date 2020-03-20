@@ -24,6 +24,12 @@
                     <legend>研究用 DDOS 測試工具</legend>
                     <p style="color: red">只允許使用在自己的網站測試防禦能力！<br>使用此程式代表你同意你會自己負責所有的衍生問題。</p>
                     <div class="form-group">
+                        <select class="custom-select" id="type">
+                            <option selected="" value="ddos">DDOS</option>
+                            <option value="ddos-post">DDOS-POST</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="blocks">Blocks, max: 50</label>
                         <input type="number" class="form-control" id="blocks" placeholder="Number of Attack Blocks" value="10">
                     </div>
@@ -35,7 +41,7 @@
                         <label for="target">Target</label>
                         <input type="text" class="form-control" id="target" placeholder="Target URL">
                     </div>
-                    <button type="button" class="btn btn-primary" onclick="atk(document.getElementById('blocks').value, document.getElementById('attacks').value, document.getElementById('target').value)">測試</button>
+                    <button type="button" class="btn btn-primary" onclick="atk(document.getElementById('blocks').value, document.getElementById('attacks').value, document.getElementById('target').value, document.getElementById('type').value)">測試</button>
                 </fieldset>
             </div>
             <div>
