@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Card</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div id="container">
+		<canvas id="card" width="683" height="1024"></canvas>
+		<div id="act"></div>
+		<div id="leader"></div>
+	</div>
+    <div class="hidden" id="hr"></div>
+    <style>
+        body {
+			font-family: Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif;
+			font-size: 0.9em;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            text-align: center;
+            margin-left: 0;
+            margin-right: 0;
+        }
+        #container {
+			position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+		canvas {
+			max-width: 100%;
+		}
+		#act {
+			position: absolute;
+			color: white;
+			text-align: left;
+			top: 73.5%;
+			left: 7%;
+			overflow: auto;
+			max-height: 50px;
+			width: 86%;
+		}
+		#leader {
+			position: absolute;
+			color: white;
+			text-align: left;
+			top: 87%;
+			left: 7%;
+			overflow: auto;
+			max-height: 50px;
+			width: 86%;
+		}
+        .hidden {
+            /* display: none !important; */
+			visibility: hidden;
+			z-index: -999;
+			position: fixed;
+			top: 0;
+        }
+    </style>
+    <script>
+		var data = {
+			color: 4,
+			name: "陳承謙",
+			star: 6,
+			space: 22,
+			level: 70,
+			max_level: 99,
+			hp: 2843,
+			atk: 1574,
+			restore: 493,
+			speice: "人類",
+			act_name: "詭譎的笑容",
+			act: "I. 1 回合內自身攻擊力 6 倍，自身攻擊傷害無視敵人防<br>禦力<br>II. 如果敵方全體為光屬性，1 回合內自身攻擊力額外 3 <br>倍；反之，延遲全體敵人行動 1 回合",
+			act_cd: 14,
+			act_lvl: 1,
+			leader_name: "笑話攻勢 ‧ 暗",
+			leader: "I. 暗屬性攻擊力 5 倍<br>II. 人類生命力、攻擊力、回復力 1.5 倍<br>III. 同時消除光、暗及心符石時<br>⇒ 人類攻擊力額外 2.5 倍<br>⇒ 減少 10% 所受傷害<br>IV. 必然延長移動符石時間 2.5 秒<br>V. 自身攻擊傷害可克制敵人<br>VI. 自身攻擊有 50% 可無視光暗盾 ‧ 限",
+			img: "https://i.imgur.com/iqcF5S5.png",
+			zoom: 0.25,
+			offset: [0, 70]
+		};
+		
+		
+        var hidden = document.getElementById("hr");
+        var resources = [], r_loaded = 0;
+		function addRes(url) {
+			var elm = document.createElement("img");
+			elm.onload = function() {
+				r_loaded++;
+				console.log(r_loaded);
+			};
+			elm.src = url;
+			resources.push(elm);
+			hidden.appendChild(resources[resources.length-1]);
+			return resources.length-1;
+		};
+		
+		
+		var ft = addRes("c.png");
+		var bg = addRes("card_background.jpg");
+		var color = [];
+		for(var i = 0; i < 5; i++) color.push(addRes(i+".png"));
+		var star = addRes("star.png");
+		var pet = addRes(data.img);
+        
+		
+        var game = document.getElementById("card");
+        var ctx = game.getContext("2d");
+        
+		var intrv = setInterval(function(){
+			if(r_loaded == resources.length) {
+				draw();
+				clearInterval(intrv);
+			}
+		}, 250);
+		
+		
+		function draw() {
+			ctx.fillStyle = "black";
+			ctx.fillRect(0, 0, 683, 1024);
+			
+			ctx.drawImage(resources[bg], -130, 50, 950, 657.5);
+			ctx.drawImage(resources[ft], 0, 0, 683, 1024);
+			
+			ctx.drawImage(resources[color[data.color]], 16, 14, 104, 104);
+			
+			ctx.font = "30px Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif";
+			ctx.fillStyle = "white";
+			ctx.fillText(data.name, 150, 55);
+			
+			for(var i = 0; i < data.star; i++) {
+				ctx.drawImage(resources[star], 150+25*i, 70, 21, 26);
+			}
+			
+			ctx.textAlign = "end";
+			ctx.font = "50px Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif";
+			ctx.fillText(data.space, 630, 120);
+			
+			ctx.fillText(data.level, 150, 600);
+			
+			ctx.font = "22px Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif";
+			ctx.fillText("/ "+data.max_level, 205, 600);
+			
+			ctx.font = "25px Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif";
+			ctx.fillText(data.hp, 340, 647);
+			
+			ctx.fillText(data.atk, 632, 647);
+			
+			ctx.fillText(data.restore, 340, 690);
+			
+			ctx.fillText(data.speice, 632, 690);
+			
+			let pw = parseInt(window.getComputedStyle(resources[pet], null).width.replace("px", ""))*data.zoom;
+			let ph = parseInt(window.getComputedStyle(resources[pet], null).height.replace("px", ""))*data.zoom;
+			ctx.drawImage(resources[pet], ((683-pw)/2)+data.offset[0], (550-ph)+data.offset[1], pw, ph);
+			
+			ctx.textAlign = "start";
+			ctx.fillText(data.act_name, 130, 745);
+			
+			document.getElementById("act").innerHTML = data.act;
+			
+			ctx.textAlign = "end";
+			ctx.font = "20px Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif";
+			ctx.fillText(data.act_cd, 540, 870);
+			
+			ctx.fillText(data.act_lvl, 632, 870);
+			
+			ctx.textAlign = "start";
+			ctx.font = "25px Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif";
+			ctx.fillText(data.leader_name, 130, 885);
+			
+			document.getElementById("leader").innerHTML = data.leader;
+		}
+		
+        
+    </script>
+    
+</body>
+</html>
