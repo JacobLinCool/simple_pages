@@ -90,7 +90,7 @@
             leader: G["leader"] || "I. 暗屬性攻擊力 5 倍<br>II. 人類生命力、攻擊力、回復力 1.5 倍<br>III. 同時消除光、暗及心符石時<br>⇒ 人類攻擊力額外 2.5 倍<br>⇒ 減少 10% 所受傷害<br>IV. 必然延長移動符石時間 2.5 秒<br>V. 自身攻擊傷害可克制敵人<br>VI. 自身攻擊有 50% 可無視光暗盾 ‧ 限",
             img: G["img"] || "https://i.imgur.com/iqcF5S5.png",
             zoom: G["zoom"] ||  0.25,
-            offset: [G["offset"].split(",")[0] ||  0, G["offset"].split(",")[1] || 70]
+            offset: [ G["offset"] ? G["offset"].split(",")[0] :  0, G["offset"] ? G["offset"].split(",")[1] : 70]
         };
         
         
