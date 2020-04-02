@@ -11,7 +11,7 @@
         <img id="question" class="hidden" src="question.png?v=0" onclick="Info(true)">
         <div id="act"></div>
         <div id="leader"></div>
-        <div id="info" class="hidden" onclick="if(e.target === this) Info(false)">
+        <div id="info" class="hidden">
             <img src="info.png?v=0">
             <div id="card_info"></div>
         </div>
@@ -165,6 +165,9 @@
             if(r_loaded == resources.length) {
                 draw();
                 document.getElementById("question").classList.remove("hidden");
+                document.getElementById("info").addEventListener("click", function(e) {
+                    if(e.target === this) Info(false);
+                });
                 clearInterval(intrv);
             }
         }, 250);
