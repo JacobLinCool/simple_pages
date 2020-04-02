@@ -168,7 +168,7 @@
             
             let pw = parseInt(window.getComputedStyle(resources[pet], null).width.replace("px", ""))*data.zoom;
             let ph = parseInt(window.getComputedStyle(resources[pet], null).height.replace("px", ""))*data.zoom;
-            ctx.drawImage(resources[pet], ((683-pw)/2)+data.offset[0], (550-ph)+data.offset[1], pw, ph);
+            ctx.drawImage(resources[pet], ((683-pw)/2)+parseInt(data.offset[0]), (550-ph)+parseInt(data.offset[1]), pw, ph);
             
             ctx.textAlign = "start";
             ctx.fillText(data.act_name, 130, 745);
