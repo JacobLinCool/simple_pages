@@ -67,7 +67,7 @@
             var m = {};
             for(i in KVs) {
                 let KV = KVs[i].split("=");
-                m[KV[0]] = KV[1];
+                m[KV[0]] = decodeURI(KV[1]);
             }
             return m;
         })();
