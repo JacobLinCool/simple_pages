@@ -24,7 +24,7 @@
             </div>
         </nav>
         <div class="container">
-            <form class="form" action="./" method="get" target="_blank">
+            <div class="form">
                 <fieldset>
                     <legend>神魔之塔 卡片 產生器</legend>
                     <p>圖片請先自行去背</p>
@@ -118,16 +118,31 @@
                         <label for="offset">圖片位移</label>
                         <input type="text" class="form-control" name="offset" value="0,0" placeholder="0,0">
                     </div>
-                    <input type="submit" class="btn btn-primary" value="製作">
+                    <div class="form-group">
+                        <label for="info">卡牌資訊(隊伍技能、組合技能)</label>
+                        <textarea class="form-control" name="info" rows="6"></textarea>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="create()">製作</button>
                 </fieldset>
-            </form>
+            </div>
             <br><br><br>
         </div>
         <!-- Main Body End -->
     </div>
-    
     <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/flatly/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script>
+        function create() {
+            var url = "./?";
+            Array.from(document.getElementsByTagName("fieldset")[0].children).forEach(elm => {
+                if(elm.children.length > 1) {
+                    url += encodeURIComponent(elm.children[1].name) + "=" + encodeURIComponent(elm.children[1].value) + "&";
+                }
+            });
+            var newW = window.open("url", "_blank");
+            setTimeout(function(){newW.location = url}, 50);
+        }
+    </script>
 </body>
 </html>
