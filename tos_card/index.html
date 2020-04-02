@@ -8,10 +8,10 @@
 <body>
     <div id="container">
         <canvas id="card" width="683" height="1024"></canvas>
-        <img id="question" src="question.png?v=0" onclick="Info(true)">
+        <img id="question" class="hidden" src="question.png?v=0" onclick="Info(true)">
         <div id="act"></div>
         <div id="leader"></div>
-        <div id="info" class="hidden" onclick="Info(false)">
+        <div id="info" class="hidden" onclick="if(e.target === this) Info(false)">
             <img src="info.png?v=0">
             <div id="card_info"></div>
         </div>
@@ -164,6 +164,7 @@
         var intrv = setInterval(function(){
             if(r_loaded == resources.length) {
                 draw();
+                document.getElementById("question").classList.remove("hidden");
                 clearInterval(intrv);
             }
         }, 250);
