@@ -229,6 +229,8 @@
             ctx.fillText(data.leader_name, 130, 885);
             
             document.getElementById("leader").innerHTML = data.leader;
+            
+            document.getElementById("card_info").innerHTML = data.info;
         }
         function Info(a) {
             if(a) document.getElementById("info").classList.remove("hidden");
