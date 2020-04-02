@@ -137,7 +137,7 @@
             var url = "./?";
             Array.from(document.getElementsByTagName("fieldset")[0].children).forEach(elm => {
                 if(elm.children.length > 1) {
-                    url += encodeURIComponent(elm.children[1].name) + "=" + encodeURIComponent(elm.children[1].value) + "&";
+                    url += encodeURIComponent(elm.children[1].name) + "=" + encodeURIComponent(elm.children[1].value.replace(/\n/g, "<br>")) + "&";
                 }
             });
             var newW = window.open("url", "_blank");
