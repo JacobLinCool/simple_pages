@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>神魔之塔 卡片 產生器</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            font-family: Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="./">神魔之塔 卡片 產生器</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar1" aria-controls="navbar1" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbar1">
+                <ul class="navbar-nav mr-auto">
+                </ul>
+            </div>
+        </nav>
+        <div class="container">
+            <form class="form" action="./" method="get" target="_blank">
+                <fieldset>
+                    <legend>神魔之塔 卡片 產生器</legend>
+                    <p>圖片請先自行去背</p>
+                    <div class="form-group">
+                        <label for="attr">屬性</label>
+                        <select class="custom-select" name="attr">
+                            <option value="0">水</option>
+                            <option value="1">火</option>
+                            <option value="2">木</option>
+                            <option value="3">光</option>
+                            <option value="4">暗</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="race">種族</label>
+                        <select class="custom-select" name="race">
+                            <option value="人類">人類</option>
+                            <option value="獸類">獸類</option>
+                            <option value="妖精類">妖精類</option>
+                            <option value="龍類">龍類</option>
+                            <option value="神族">神族</option>
+                            <option value="魔族">魔族</option>
+                            <option value="機械族">機械族</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">卡片名稱</label>
+                        <input type="text" class="form-control" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="star">卡片星星</label>
+                        <input type="number" class="form-control" name="star" min="1" max="8">
+                    </div>
+                    <div class="form-group">
+                        <label for="space">卡片空間</label>
+                        <input type="number" class="form-control" name="space" min="1" max="99">
+                    </div>
+                    <div class="form-group">
+                        <label for="lvl">卡片等級</label>
+                        <input type="number" class="form-control" name="lvl" min="1" max="99">
+                    </div>
+                    <div class="form-group">
+                        <label for="mlvl">卡片最大等級</label>
+                        <input type="number" class="form-control" name="mlvl" min="1" max="99">
+                    </div>
+                    <div class="form-group">
+                        <label for="hp">卡片生命力</label>
+                        <input type="number" class="form-control" name="hp">
+                    </div>
+                    <div class="form-group">
+                        <label for="atk">卡片攻擊力</label>
+                        <input type="number" class="form-control" name="atk">
+                    </div>
+                    <div class="form-group">
+                        <label for="rec">卡片回復力</label>
+                        <input type="number" class="form-control" name="rec">
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="製作">
+                </fieldset>
+            </form>
+        </div>
+        <!-- Main Body End -->
+    </div>
+    
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/flatly/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</body>
+</html>
