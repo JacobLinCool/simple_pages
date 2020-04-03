@@ -175,6 +175,7 @@
         
         
         function draw() {
+try {
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, 683, 1024);
             
@@ -231,6 +232,10 @@
             document.getElementById("leader").innerHTML = data.leader;
             
             document.getElementById("card_info").innerHTML = data.info;
+}
+catch(err) {
+    prompt("發生錯誤，請將此網址傳送給管理員：", location.href);
+}
         }
         function Info(a) {
             if(a) document.getElementById("info").classList.remove("hidden");
