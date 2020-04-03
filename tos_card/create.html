@@ -143,7 +143,7 @@
             });
             
             fetch("https://tos-card.firebaseio.com/card.json", {method: "POST", body: JSON.stringify(data)}).then(r=>r.json()).then(t=>{
-                var newW = window.open("url", "_blank");
+                window.newW = window.open("url", "_blank");
                 setTimeout(function(){newW.location = "./?card="+t.name}, 50);
                 document.getElementById("create").disabled = false;
             });
