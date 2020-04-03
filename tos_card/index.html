@@ -135,6 +135,7 @@
                 offset: [ G["offset"] ? G["offset"].split(",")[0] :  0, G["offset"] ? G["offset"].split(",")[1] : 70],
                 info: G["info"] || "【HSNU 1481】"
             };
+            prepare();
         });
         else {
             var data = {
@@ -159,46 +160,47 @@
                 offset: [ Get["offset"] ? Get["offset"].split(",")[0] :  0, Get["offset"] ? Get["offset"].split(",")[1] : 70],
                 info: Get["info"] || "【HSNU 1481】"
             };
+            prepare();
         }
         
-        
-        var hidden = document.getElementById("hr");
-        var resources = [], r_loaded = 0;
-        function addRes(url) {
-            var elm = document.createElement("img");
-            elm.onload = function() {
-                r_loaded++;
-                console.log(r_loaded);
+        function prepare() {
+            var hidden = document.getElementById("hr");
+            var resources = [], r_loaded = 0;
+            function addRes(url) {
+                var elm = document.createElement("img");
+                elm.onload = function() {
+                    r_loaded++;
+                    console.log(r_loaded);
+                };
+                elm.src = url;
+                resources.push(elm);
+                hidden.appendChild(resources[resources.length-1]);
+                return resources.length-1;
             };
-            elm.src = url;
-            resources.push(elm);
-            hidden.appendChild(resources[resources.length-1]);
-            return resources.length-1;
-        };
-        
-        
-        var ft = addRes("c.png?v=0");
-        var bg = addRes("card_background.jpg?v=0");
-        var color = [];
-        for(var i = 0; i < 5; i++) color.push(addRes(i+".png?v=0"));
-        var star = addRes("star.png?v=0");
-        var pet = addRes(data.img);
-        
-        
-        var game = document.getElementById("card");
-        var ctx = game.getContext("2d");
-        
-        var intrv = setInterval(function(){
-            if(r_loaded == resources.length) {
-                draw();
-                document.getElementById("question").classList.remove("hidden");
-                document.getElementById("info").addEventListener("click", function(e) {
-                    if(e.target === this) Info(false);
-                });
-                clearInterval(intrv);
-            }
-        }, 250);
-        
+            
+            
+            var ft = addRes("c.png?v=0");
+            var bg = addRes("card_background.jpg?v=0");
+            var color = [];
+            for(var i = 0; i < 5; i++) color.push(addRes(i+".png?v=0"));
+            var star = addRes("star.png?v=0");
+            var pet = addRes(data.img);
+            
+            
+            var game = document.getElementById("card");
+            var ctx = game.getContext("2d");
+            
+            var intrv = setInterval(function(){
+                if(r_loaded == resources.length) {
+                    draw();
+                    document.getElementById("question").classList.remove("hidden");
+                    document.getElementById("info").addEventListener("click", function(e) {
+                        if(e.target === this) Info(false);
+                    });
+                    clearInterval(intrv);
+                }
+            }, 250);
+        }
         
         function draw() {
             try {
