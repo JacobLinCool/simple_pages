@@ -102,7 +102,7 @@
         }
     </style>
     <script>
-        var G = (function(){
+        var Get = (function(){
             var x = location.href;
             var KVs = x.search(/\?/)>-1?x.substr(x.search(/\?/)+1).split("&"):[];
             var m = {};
@@ -112,28 +112,54 @@
             }
             return m;
         })();
-        var data = {
-            color: G["attr"] || 4,
-            name: G["name"] || "陳承謙",
-            star: G["star"] ||  6,
-            space: G["space"] ||  22,
-            level: G["lvl"] ||  70,
-            max_level: G["mlvl"] ||  99,
-            hp: G["hp"] ||  2843,
-            atk: G["atk"] ||  1574,
-            restore: G["rec"] ||  493,
-            speice: G["race"] || "人類",
-            act_name: G["act_name"] || "詭譎的笑容",
-            act: G["act"] || "I. 1 回合內自身攻擊力 6 倍，自身攻擊傷害無視敵人防禦力<br>II. 如果敵方全體為光屬性，1 回合內自身攻擊力額外 3 倍；反之，延遲全體敵人行動 1 回合",
-            act_cd: G["act_cd"] ||  14,
-            act_lvl: G["act_lvl"] ||  1,
-            leader_name: G["leader_name"] || "笑話攻勢 ‧ 暗",
-            leader: G["leader"] || "I. 暗屬性攻擊力 5 倍<br>II. 人類生命力、攻擊力、回復力 1.5 倍<br>III. 同時消除光、暗及心符石時<br>⇒ 人類攻擊力額外 2.5 倍<br>⇒ 減少 10% 所受傷害<br>IV. 必然延長移動符石時間 2.5 秒<br>V. 自身攻擊傷害可克制敵人<br>VI. 自身攻擊有 50% 可無視光暗盾 ‧ 限",
-            img: G["img"] || "https://i.imgur.com/iqcF5S5.png",
-            zoom: G["zoom"] ||  0.25,
-            offset: [ G["offset"] ? G["offset"].split(",")[0] :  0, G["offset"] ? G["offset"].split(",")[1] : 70],
-            info: G["info"] || "【HSNU 1481】"
-        };
+        if(Get["card"]) fetch("https://tos-card.firebaseio.com/card/"+Get["card"]+".json").then(r=>r.json()).then(d => {G = d}).then(() => {
+            var data = {
+                color: G["attr"] || 4,
+                name: G["name"] || "陳承謙",
+                star: G["star"] ||  6,
+                space: G["space"] ||  22,
+                level: G["lvl"] ||  70,
+                max_level: G["mlvl"] ||  99,
+                hp: G["hp"] ||  2843,
+                atk: G["atk"] ||  1574,
+                restore: G["rec"] ||  493,
+                speice: G["race"] || "人類",
+                act_name: G["act_name"] || "詭譎的笑容",
+                act: G["act"] || "I. 1 回合內自身攻擊力 6 倍，自身攻擊傷害無視敵人防禦力<br>II. 如果敵方全體為光屬性，1 回合內自身攻擊力額外 3 倍；反之，延遲全體敵人行動 1 回合",
+                act_cd: G["act_cd"] ||  14,
+                act_lvl: G["act_lvl"] ||  1,
+                leader_name: G["leader_name"] || "笑話攻勢 ‧ 暗",
+                leader: G["leader"] || "I. 暗屬性攻擊力 5 倍<br>II. 人類生命力、攻擊力、回復力 1.5 倍<br>III. 同時消除光、暗及心符石時<br>⇒ 人類攻擊力額外 2.5 倍<br>⇒ 減少 10% 所受傷害<br>IV. 必然延長移動符石時間 2.5 秒<br>V. 自身攻擊傷害可克制敵人<br>VI. 自身攻擊有 50% 可無視光暗盾 ‧ 限",
+                img: G["img"] || "https://i.imgur.com/iqcF5S5.png",
+                zoom: G["zoom"] ||  0.25,
+                offset: [ G["offset"] ? G["offset"].split(",")[0] :  0, G["offset"] ? G["offset"].split(",")[1] : 70],
+                info: G["info"] || "【HSNU 1481】"
+            };
+        });
+        else {
+            var data = {
+                color: Get["attr"] || 4,
+                name: Get["name"] || "陳承謙",
+                star: Get["star"] ||  6,
+                space: Get["space"] ||  22,
+                level: Get["lvl"] ||  70,
+                max_level: Get["mlvl"] ||  99,
+                hp: Get["hp"] ||  2843,
+                atk: Get["atk"] ||  1574,
+                restore: Get["rec"] ||  493,
+                speice: Get["race"] || "人類",
+                act_name: Get["act_name"] || "詭譎的笑容",
+                act: Get["act"] || "I. 1 回合內自身攻擊力 6 倍，自身攻擊傷害無視敵人防禦力<br>II. 如果敵方全體為光屬性，1 回合內自身攻擊力額外 3 倍；反之，延遲全體敵人行動 1 回合",
+                act_cd: Get["act_cd"] ||  14,
+                act_lvl: Get["act_lvl"] ||  1,
+                leader_name: Get["leader_name"] || "笑話攻勢 ‧ 暗",
+                leader: Get["leader"] || "I. 暗屬性攻擊力 5 倍<br>II. 人類生命力、攻擊力、回復力 1.5 倍<br>III. 同時消除光、暗及心符石時<br>⇒ 人類攻擊力額外 2.5 倍<br>⇒ 減少 10% 所受傷害<br>IV. 必然延長移動符石時間 2.5 秒<br>V. 自身攻擊傷害可克制敵人<br>VI. 自身攻擊有 50% 可無視光暗盾 ‧ 限",
+                img: Get["img"] || "https://i.imgur.com/iqcF5S5.png",
+                zoom: Get["zoom"] ||  0.25,
+                offset: [ Get["offset"] ? Get["offset"].split(",")[0] :  0, Get["offset"] ? Get["offset"].split(",")[1] : 70],
+                info: Get["info"] || "【HSNU 1481】"
+            };
+        }
         
         
         var hidden = document.getElementById("hr");
@@ -175,67 +201,67 @@
         
         
         function draw() {
-try {
-            ctx.fillStyle = "black";
-            ctx.fillRect(0, 0, 683, 1024);
-            
-            ctx.drawImage(resources[bg], -130, 50, 950, 657.5);
-            ctx.drawImage(resources[ft], 0, 0, 683, 1024);
-            
-            ctx.drawImage(resources[color[data.color]], 16, 14, 104, 104);
-            
-            ctx.font = "30px Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif";
-            ctx.fillStyle = "white";
-            ctx.fillText(data.name, 150, 55);
-            
-            for(var i = 0; i < data.star; i++) {
-                ctx.drawImage(resources[star], 150+25*i, 70, 21, 26);
+            try {
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, 683, 1024);
+                
+                ctx.drawImage(resources[bg], -130, 50, 950, 657.5);
+                ctx.drawImage(resources[ft], 0, 0, 683, 1024);
+                
+                ctx.drawImage(resources[color[data.color]], 16, 14, 104, 104);
+                
+                ctx.font = "30px Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif";
+                ctx.fillStyle = "white";
+                ctx.fillText(data.name, 150, 55);
+                
+                for(var i = 0; i < data.star; i++) {
+                    ctx.drawImage(resources[star], 150+25*i, 70, 21, 26);
+                }
+                
+                ctx.textAlign = "end";
+                ctx.font = "50px Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif";
+                ctx.fillText(data.space, 630, 120);
+                
+                ctx.fillText(data.level, 150, 600);
+                
+                ctx.font = "22px Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif";
+                ctx.fillText("/ "+data.max_level, 205, 600);
+                
+                ctx.font = "25px Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif";
+                ctx.fillText(data.hp, 340, 647);
+                
+                ctx.fillText(data.atk, 632, 647);
+                
+                ctx.fillText(data.restore, 340, 690);
+                
+                ctx.fillText(data.speice, 632, 690);
+                
+                let pw = parseInt(window.getComputedStyle(resources[pet], null).width.replace("px", ""))*data.zoom;
+                let ph = parseInt(window.getComputedStyle(resources[pet], null).height.replace("px", ""))*data.zoom;
+                ctx.drawImage(resources[pet], ((683-pw)/2)+parseInt(data.offset[0]), (550-ph)+parseInt(data.offset[1]), pw, ph);
+                
+                ctx.textAlign = "start";
+                ctx.fillText(data.act_name, 130, 745);
+                
+                document.getElementById("act").innerHTML = data.act;
+                
+                ctx.textAlign = "end";
+                ctx.font = "20px Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif";
+                ctx.fillText(data.act_cd, 540, 870);
+                
+                ctx.fillText(data.act_lvl, 632, 870);
+                
+                ctx.textAlign = "start";
+                ctx.font = "25px Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif";
+                ctx.fillText(data.leader_name, 130, 885);
+                
+                document.getElementById("leader").innerHTML = data.leader;
+                
+                document.getElementById("card_info").innerHTML = data.info;
             }
-            
-            ctx.textAlign = "end";
-            ctx.font = "50px Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif";
-            ctx.fillText(data.space, 630, 120);
-            
-            ctx.fillText(data.level, 150, 600);
-            
-            ctx.font = "22px Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif";
-            ctx.fillText("/ "+data.max_level, 205, 600);
-            
-            ctx.font = "25px Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif";
-            ctx.fillText(data.hp, 340, 647);
-            
-            ctx.fillText(data.atk, 632, 647);
-            
-            ctx.fillText(data.restore, 340, 690);
-            
-            ctx.fillText(data.speice, 632, 690);
-            
-            let pw = parseInt(window.getComputedStyle(resources[pet], null).width.replace("px", ""))*data.zoom;
-            let ph = parseInt(window.getComputedStyle(resources[pet], null).height.replace("px", ""))*data.zoom;
-            ctx.drawImage(resources[pet], ((683-pw)/2)+parseInt(data.offset[0]), (550-ph)+parseInt(data.offset[1]), pw, ph);
-            
-            ctx.textAlign = "start";
-            ctx.fillText(data.act_name, 130, 745);
-            
-            document.getElementById("act").innerHTML = data.act;
-            
-            ctx.textAlign = "end";
-            ctx.font = "20px Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif";
-            ctx.fillText(data.act_cd, 540, 870);
-            
-            ctx.fillText(data.act_lvl, 632, 870);
-            
-            ctx.textAlign = "start";
-            ctx.font = "25px Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif";
-            ctx.fillText(data.leader_name, 130, 885);
-            
-            document.getElementById("leader").innerHTML = data.leader;
-            
-            document.getElementById("card_info").innerHTML = data.info;
-}
-catch(err) {
-    prompt("發生錯誤，請將此網址傳送給管理員：", location.href);
-}
+            catch(err) {
+                prompt("發生錯誤，請將此網址傳送給管理員：", location.href);
+            }
         }
         function Info(a) {
             if(a) document.getElementById("info").classList.remove("hidden");
