@@ -122,7 +122,7 @@
                         <label for="info">卡牌資訊(隊伍技能、組合技能)</label>
                         <textarea class="form-control" name="info" rows="6"></textarea>
                     </div>
-                    <button type="button" class="btn btn-primary" onclick="create()">製作</button>
+                    <button id="create" type="button" class="btn btn-primary" onclick="create()">製作</button>
                 </fieldset>
             </div>
             <br><br><br>
@@ -134,14 +134,19 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <script>
         function create() {
-            var url = "./?";
+            document.getElementById("create").disabled = true;
+            var data = {};
             Array.from(document.getElementsByTagName("fieldset")[0].children).forEach(elm => {
                 if(elm.children.length > 1) {
-                    url += encodeURIComponent(elm.children[1].name) + "=" + encodeURIComponent(elm.children[1].value.replace(/\n/g, "<br>")) + "&";
+                    data[elm.children[1].name] = elm.children[1].value.replace(/\n/g, "<br>");
                 }
             });
-            var newW = window.open("url", "_blank");
-            setTimeout(function(){newW.location = url}, 50);
+            
+            fetch("https://tos-card.firebaseio.com/card.json", {method: "POST", body: JSON.stringify(data)}).then(r=>r.json()).then(t=>{
+                var newW = window.open("./?card="t.name, "_blank");
+                setTimeout(function(){newW.location = url}, 50);
+                document.getElementById("create").disabled = false;
+            });
         }
     </script>
 </body>
