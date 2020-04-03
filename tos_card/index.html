@@ -163,10 +163,7 @@
             prepare();
         }
         
-        function prepare() {
-            var hidden = document.getElementById("hr");
-            var resources = [], r_loaded = 0;
-            function addRes(url) {
+        function addRes(url) {
                 var elm = document.createElement("img");
                 elm.onload = function() {
                     r_loaded++;
@@ -177,18 +174,20 @@
                 hidden.appendChild(resources[resources.length-1]);
                 return resources.length-1;
             };
+        
+        function prepare() {
+            window.hidden = document.getElementById("hr");
+            window.resources = [], r_loaded = 0;
             
-            
-            var ft = addRes("c.png?v=0");
-            var bg = addRes("card_background.jpg?v=0");
-            var color = [];
+            window.ft = addRes("c.png?v=0");
+            window.bg = addRes("card_background.jpg?v=0");
+            window.color = [];
             for(var i = 0; i < 5; i++) color.push(addRes(i+".png?v=0"));
-            var star = addRes("star.png?v=0");
-            var pet = addRes(data.img);
+            window.star = addRes("star.png?v=0");
+            window.pet = addRes(data.img);
             
-            
-            var game = document.getElementById("card");
-            var ctx = game.getContext("2d");
+            window.game = document.getElementById("card");
+            window.ctx = game.getContext("2d");
             
             var intrv = setInterval(function(){
                 if(r_loaded == resources.length) {
