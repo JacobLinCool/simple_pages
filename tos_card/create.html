@@ -56,31 +56,31 @@
                     </div>
                     <div class="form-group">
                         <label for="star">卡片星星</label>
-                        <input type="number" class="form-control" name="star" min="1" max="8">
+                        <input type="number" class="form-control" name="star" min="1" max="8" value="6">
                     </div>
                     <div class="form-group">
                         <label for="space">卡片空間</label>
-                        <input type="number" class="form-control" name="space" min="1" max="99">
+                        <input type="number" class="form-control" name="space" min="1" max="99" value="24">
                     </div>
                     <div class="form-group">
                         <label for="lvl">卡片等級</label>
-                        <input type="number" class="form-control" name="lvl" min="1" max="99">
+                        <input type="number" class="form-control" name="lvl" min="1" max="99" value="70">
                     </div>
                     <div class="form-group">
                         <label for="mlvl">卡片最大等級</label>
-                        <input type="number" class="form-control" name="mlvl" min="1" max="99">
+                        <input type="number" class="form-control" name="mlvl" min="1" max="99" value="99">
                     </div>
                     <div class="form-group">
                         <label for="hp">卡片生命力</label>
-                        <input type="number" class="form-control" name="hp">
+                        <input type="number" class="form-control" name="hp" value="1000">
                     </div>
                     <div class="form-group">
                         <label for="atk">卡片攻擊力</label>
-                        <input type="number" class="form-control" name="atk">
+                        <input type="number" class="form-control" name="atk" value="1000">
                     </div>
                     <div class="form-group">
                         <label for="rec">卡片回復力</label>
-                        <input type="number" class="form-control" name="rec">
+                        <input type="number" class="form-control" name="rec" value="500">
                     </div>
                     <div class="form-group">
                         <label for="act_name">主動技名稱</label>
@@ -92,11 +92,11 @@
                     </div>
                     <div class="form-group">
                         <label for="act_cd">主動技CD</label>
-                        <input type="number" class="form-control" name="act_cd">
+                        <input type="number" class="form-control" name="act_cd" value="22">
                     </div>
                     <div class="form-group">
                         <label for="act_lvl">主動技等級</label>
-                        <input type="number" class="form-control" name="act_lvl">
+                        <input type="number" class="form-control" name="act_lvl" value="1">
                     </div>
                     <div class="form-group">
                         <label for="leader_name">隊長技名稱</label>
@@ -112,15 +112,15 @@
                     </div>
                     <div class="form-group">
                         <label for="zoom">圖片縮放</label>
-                        <input type="text" class="form-control" name="zoom" value="1" placeholder="1">
+                        <input type="text" class="form-control" name="zoom" value="1" placeholder="1" value="1">
                     </div>
                     <div class="form-group">
                         <label for="offset">圖片位移</label>
-                        <input type="text" class="form-control" name="offset" value="0,0" placeholder="0,0">
+                        <input type="text" class="form-control" name="offset" value="0,0" placeholder="0,0" value="0,0">
                     </div>
                     <div class="form-group">
                         <label for="info">卡牌資訊(隊伍技能、組合技能)</label>
-                        <textarea class="form-control" name="info" rows="6"></textarea>
+                        <textarea class="form-control" name="info" rows="6">【自製卡片】</textarea>
                     </div>
                     <button id="create" type="button" class="btn btn-primary" onclick="create()">製作</button>
                 </fieldset>
