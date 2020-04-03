@@ -113,7 +113,7 @@
             return m;
         })();
         if(Get["card"]) fetch("https://tos-card.firebaseio.com/card/"+Get["card"]+".json").then(r=>r.json()).then(d => {G = d}).then(() => {
-            var data = {
+            window.data = {
                 color: G["attr"] || 4,
                 name: G["name"] || "陳承謙",
                 star: G["star"] ||  6,
@@ -138,7 +138,7 @@
             prepare();
         });
         else {
-            var data = {
+            window.data = {
                 color: Get["attr"] || 4,
                 name: Get["name"] || "陳承謙",
                 star: Get["star"] ||  6,
