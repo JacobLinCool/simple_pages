@@ -207,6 +207,11 @@
                 ctx.fillRect(0, 0, 683, 1024);
                 
                 ctx.drawImage(resources[bg], -130, 50, 950, 657.5);
+                
+                let pw = parseInt(window.getComputedStyle(resources[pet], null).width.replace("px", ""))*data.zoom;
+                let ph = parseInt(window.getComputedStyle(resources[pet], null).height.replace("px", ""))*data.zoom;
+                ctx.drawImage(resources[pet], ((683-pw)/2)+parseInt(data.offset[0]), (550-ph)+parseInt(data.offset[1]), pw, ph);
+                
                 ctx.drawImage(resources[ft], 0, 0, 683, 1024);
                 
                 ctx.drawImage(resources[color[data.color]], 16, 14, 104, 104);
@@ -236,10 +241,6 @@
                 ctx.fillText(data.restore, 340, 690);
                 
                 ctx.fillText(data.speice, 632, 690);
-                
-                let pw = parseInt(window.getComputedStyle(resources[pet], null).width.replace("px", ""))*data.zoom;
-                let ph = parseInt(window.getComputedStyle(resources[pet], null).height.replace("px", ""))*data.zoom;
-                ctx.drawImage(resources[pet], ((683-pw)/2)+parseInt(data.offset[0]), (550-ph)+parseInt(data.offset[1]), pw, ph);
                 
                 ctx.textAlign = "start";
                 ctx.fillText(data.act_name, 130, 745);
