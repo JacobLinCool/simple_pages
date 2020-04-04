@@ -108,6 +108,9 @@
             } catch(error) {
                 console.error("PageBuilder Error: Failed to Render Pages.", error);
             }
+            
+            
+            D.getElementById("AfterLoadedCSS").innerHTML = D.getElementById("AfterLoadedCSS").innerHTML.replace("After", "Before");
         }
         
         function togglePage(page) {
