@@ -30,9 +30,7 @@
         <!-- Navigation End -->
         <!-- Main Body Start -->
         <div id="wrapper" class="wrapper">
-            <div class="page page-home">
-                
-            </div>
+            
         </div>
         <!-- Main Body End -->
     </div>
@@ -94,7 +92,7 @@
             try {
                 for(var page in pd.pages) {
                     let ListItem = D.createElement("li"), Link = D.createElement("a");
-                    ListItem.classList.add("nav-item", "nav-home", "nav-s-in");
+                    ListItem.classList.add("nav-item", "nav-"+pd.pages[page].name, "nav-s-in");
                     Link.classList.add("nav-link");
                     Link.href = `javascript: togglePage("${pd.pages[page].name}")`;
                     Link.innerHTML = pd.pages[page].name;
