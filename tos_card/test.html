@@ -84,6 +84,14 @@
             }
             
             try {
+                let sheet = D.createElement("style");
+                sheet.innerHTML = pd.css;
+                D.body.appendChild(sheet);
+            } catch(error) {
+                console.error("PageBuilder Error: Failed to Render Global CSS.", error);
+            }
+            
+            try {
                 for(var page in pd.pages) {
                     let ListItem = D.createElement("li"), Link = D.createElement("a");
                     ListItem.classList.add("nav-item", "nav-home", "nav-s-in");
