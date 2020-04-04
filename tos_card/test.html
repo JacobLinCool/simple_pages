@@ -99,7 +99,7 @@
                     Link.href = `javascript: togglePage("${pd.pages[page].name}")`;
                     Link.innerHTML = pd.pages[page].name;
                     ListItem.appendChild(Link);
-                    D.getElementById("PageList").appendChild(ListItem);
+                    D.getElementById("PageList-L").appendChild(ListItem);
                     
                     let Page = D.createElement("div");
                     Page.classList.add("page", "page-"+pd.pages[page].name);
