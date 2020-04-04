@@ -45,18 +45,28 @@
     <script>
         var pageData = {
             title: "TOS Card Creator",
+            css: "* {font-family: Verdana, '微軟正黑體', 'Microsoft JhengHei', 'PingFang', sans-serif;}",
             pages: [
                 {
                     name: "Home",
-                    items: []
+                    items: [
+                        {
+                            type: "title",
+                            css: ""
+                        }
+                    ]
                 },
                 {
                     name: "Creator",
-                    items: []
+                    items: [
+                        
+                    ]
                 },
                 {
                     name: "Settings",
-                    items: []
+                    items: [
+                        
+                    ]
                 }
             ]
         };
@@ -65,31 +75,27 @@
         
         function PageBuilder(pd) {
             var D = document;
-            var ID = D.getElementById;
-            var CLASS = D.getElementsByClassName;
-            var TAG = D.getElementsByTagName;
-            var ELM = D.createElement;
             
             try {
                 D.title = pd.title || "Webpage";
-                ID("PageTitle").innerHTML = pd.title || "Webpage";
+                D.getElementById("PageTitle").innerHTML = pd.title || "Webpage";
             } catch(error) {
                 console.error("PageBuilder Error: Failed to Render Title.", error);
             }
             
             try {
                 for(var page in pd.pages) {
-                    let ListItem = ELM("li"), Link = ELM("a");
+                    let ListItem = D.createElement("li"), Link = D.createElement("a");
                     ListItem.classList.add("nav-item", "nav-home", "nav-s-in");
                     Link.classList.add("nav-link");
                     Link.href = `javascript: togglePage("${pd.pages[page].name}")`;
                     Link.innerHTML = pd.pages[page].name;
                     ListItem.appendChild(Link);
-                    ID("PageList").appendChild(ListItem);
+                    D.getElementById("PageList").appendChild(ListItem);
                     
-                    let Page = ELM("div");
+                    let Page = D.createElement("div");
                     Page.classList.add("page", "page-"+pd.pages[page].name);
-                    ID("wrapper").appendChild(Page);
+                    D.getElementById("wrapper").appendChild(Page);
                 }
             } catch(error) {
                 console.error("PageBuilder Error: Failed to Render Pages.", error);
