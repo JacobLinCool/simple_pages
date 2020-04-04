@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TOS Card Creator</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style id="AfterLoadedCSS">.AfterLoaded {display: none !important; }</style>
+</head>
+<body>
+    <div class="BeforeLoaded">
+        <h3 style="font-family: sans-serif">Loading...</h3>
+    </div>
+    <div class="AfterLoaded">
+        <!-- Navigation Start -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a id="PageTitle" class="navbar-brand" href="./">TOS Card Creator</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar1" aria-controls="navbar1" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbar1">
+                <ul id="PageList-L" class="navbar-nav mr-auto">
+                    
+                </ul>
+                <ul id="PageList-R" class="navbar-nav ml-auto">
+                    
+                </ul>
+            </div>
+        </nav>
+        <!-- Navigation End -->
+        <!-- Main Body Start -->
+        <div id="wrapper" class="wrapper">
+            <div class="page page-home">
+                
+            </div>
+        </div>
+        <!-- Main Body End -->
+    </div>
+    
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/flatly/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+    <script>
+        var pageData = {
+            title: "TOS Card Creator",
+            pages: [
+                {
+                    name: "Home",
+                    items: []
+                },
+                {
+                    name: "Creator",
+                    items: []
+                },
+                {
+                    name: "Settings",
+                    items: []
+                }
+            ]
+        };
+        
+        PageBuilder(pageData);
+        
+        function PageBuilder(pd) {
+            var D = document;
+            var ID = D.getElementById;
+            var CLASS = D.getElementsByClassName;
+            var TAG = D.getElementsByTagName;
+            var ELM = D.createElement;
+            
+            try {
+                D.title = pd.title || "Webpage";
+                ID("PageTitle").innerHTML = pd.title || "Webpage";
+            } catch(error) {
+                console.error("PageBuilder Error: Failed to Render Title.", error);
+            }
+            
+            try {
+                for(var page in pd.pages) {
+                    let ListItem = ELM("li"), Link = ELM("a");
+                    ListItem.classList.add("nav-item", "nav-home", "nav-s-in");
+                    Link.classList.add("nav-link");
+                    Link.href = `javascript: togglePage("${pd.pages[page].name}")`;
+                    Link.innerHTML = pd.pages[page].name;
+                    ListItem.appendChild(Link);
+                    ID("PageList").appendChild(ListItem);
+                    
+                    let Page = ELM("div");
+                    Page.classList.add("page", "page-"+pd.pages[page].name);
+                    ID("wrapper").appendChild(Page);
+                }
+            } catch(error) {
+                console.error("PageBuilder Error: Failed to Render Pages.", error);
+            }
+        }
+        
+        function togglePage(page) {
+            Array.from(document.getElementsByClassName("page")).forEach(elm => {
+                elm.style.display = "none";
+            });
+            Array.from(document.getElementsByClassName("nav-item")).forEach(elm => {
+                elm.classList.remove("active");
+            });
+            document.getElementsByClassName("page-"+page)[0].style.display = "block";
+            try { document.getElementsByClassName("nav-"+page)[0].classList.add("active"); } catch(e) {}
+            localStorage["page"] = page;
+        }
+    </script>
+</body>
+</html>
