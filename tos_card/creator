@@ -1,0 +1,118 @@
+<div class="form">
+    <fieldset>
+        <legend>神魔之塔 卡片 產生器</legend>
+        <p>圖片請先自行去背</p>
+        <div class="form-group">
+            <label for="attr">屬性</label>
+            <select class="custom-select" name="attr">
+                <option value="0">水</option>
+                <option value="1">火</option>
+                <option value="2">木</option>
+                <option value="3">光</option>
+                <option value="4">暗</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="race">種族</label>
+            <select class="custom-select" name="race">
+                <option value="人類">人類</option>
+                <option value="獸類">獸類</option>
+                <option value="妖精類">妖精類</option>
+                <option value="龍類">龍類</option>
+                <option value="神族">神族</option>
+                <option value="魔族">魔族</option>
+                <option value="機械族">機械族</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="name">卡片名稱</label>
+            <input type="text" class="form-control" name="name">
+        </div>
+        <div class="form-group">
+            <label for="star">卡片星星</label>
+            <input type="number" class="form-control" name="star" min="1" max="8" value="6">
+        </div>
+        <div class="form-group">
+            <label for="space">卡片空間</label>
+            <input type="number" class="form-control" name="space" min="1" max="99" value="24">
+        </div>
+        <div class="form-group">
+            <label for="lvl">卡片等級</label>
+            <input type="number" class="form-control" name="lvl" min="1" max="99" value="70">
+        </div>
+        <div class="form-group">
+            <label for="mlvl">卡片最大等級</label>
+            <input type="number" class="form-control" name="mlvl" min="1" max="99" value="99">
+        </div>
+        <div class="form-group">
+            <label for="hp">卡片生命力</label>
+            <input type="number" class="form-control" name="hp" value="1000">
+        </div>
+        <div class="form-group">
+            <label for="atk">卡片攻擊力</label>
+            <input type="number" class="form-control" name="atk" value="1000">
+        </div>
+        <div class="form-group">
+            <label for="rec">卡片回復力</label>
+            <input type="number" class="form-control" name="rec" value="500">
+        </div>
+        <div class="form-group">
+            <label for="act_name">主動技名稱</label>
+            <input type="text" class="form-control" name="act_name">
+        </div>
+        <div class="form-group">
+            <label for="act">主動技敘述</label>
+            <textarea class="form-control" name="act" rows="4"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="act_cd">主動技CD</label>
+            <input type="number" class="form-control" name="act_cd" value="22">
+        </div>
+        <div class="form-group">
+            <label for="act_lvl">主動技等級</label>
+            <input type="number" class="form-control" name="act_lvl" value="1">
+        </div>
+        <div class="form-group">
+            <label for="leader_name">隊長技名稱</label>
+            <input type="text" class="form-control" name="leader_name">
+        </div>
+        <div class="form-group">
+            <label for="leader">隊長技敘述</label>
+            <textarea class="form-control" name="leader" rows="4"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="img">圖片網址</label>
+            <input type="text" class="form-control" name="img">
+        </div>
+        <div class="form-group">
+            <label for="zoom">圖片縮放</label>
+            <input type="text" class="form-control" name="zoom" value="1" placeholder="1" value="1">
+        </div>
+        <div class="form-group">
+            <label for="offset">圖片位移</label>
+            <input type="text" class="form-control" name="offset" value="0,0" placeholder="0,0" value="0,0">
+        </div>
+        <div class="form-group">
+            <label for="info">卡牌資訊(隊伍技能、組合技能)</label>
+            <textarea class="form-control" name="info" rows="6">【自製卡片】</textarea>
+        </div>
+        <button id="create" type="button" class="btn btn-primary" onclick="create()">製作</button>
+    </fieldset>
+</div>
+<br><br><br>
+<script>
+    function create() {
+        document.getElementById("create").disabled = true;
+        var data = {};
+        Array.from(document.getElementsByTagName("fieldset")[0].children).forEach(elm => {
+            if(elm.children.length > 1) {
+                data[elm.children[1].name] = elm.children[1].value.replace(/\n/g, "<br>");
+            }
+        });
+        window.newW = window.open("url", "_blank");
+        fetch("https://tos-card.firebaseio.com/card.json", {method: "POST", body: JSON.stringify(data)}).then(r=>r.json()).then(t=>{
+            setTimeout(function(){newW.location = "./?card="+t.name}, 50);
+            document.getElementById("create").disabled = false;
+        });
+    }
+</script>
