@@ -26,6 +26,7 @@ function create() {
             showLoaderOnConfirm: true,
             preConfirm: (url) => {
                 document.getElementById("copy_btn").click();
+                Swal.fire("已複製","","success");
             }
         });
     })
