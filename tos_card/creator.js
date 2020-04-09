@@ -9,5 +9,24 @@ function addMec(){document.getElementsByName("info")[0].value += `
 當所有機械族成員的行動值達至 100% 時，機械族成員每回合以 25% 自身攻擊力隨機追打自身屬性或自身克制屬性的攻擊 1 至 2 次
 
 條件：
-隊伍中有 2 個或以上的機械族成員`;
-                 }
+隊伍中有 2 個或以上的機械族成員`;}
+async function uploadImg(file) {
+    var hdr  = new Headers();
+    hdr.append("Authorization", "Client-ID 7bde459dc4640c8");
+    
+    var data = new FormData();
+    data.append("image", file);
+    
+    var opt = {
+      method: 'POST',
+      headers: hdr,
+      body: data,
+      redirect: 'follow'
+    };
+    var r;
+    try {
+      r = await fetch("https://api.imgur.com/3/image", opt).then(r => r.json()).then(result => result.id);
+    } catch(err) {}
+    if(!r) r = "Failed to Upload.";
+    return r;
+}
