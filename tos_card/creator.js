@@ -25,7 +25,7 @@ async function uploadImg(file) {
     };
     var r;
     try {
-      r = await fetch("https://api.imgur.com/3/image", opt).then(r => r.json()).then(result => result.id);
+      r = await fetch("https://api.imgur.com/3/image", opt).then(r => r.json()).then(result => result.data.id);
     } catch(err) {}
     if(!r) r = "Failed to Upload.";
     return r;
