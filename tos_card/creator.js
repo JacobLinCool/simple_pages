@@ -30,3 +30,13 @@ async function uploadImg(file) {
     if(!r) r = "Failed to Upload.";
     return r;
 }
+function preview() {
+    var url = "./view?";
+    Array.from(document.getElementsByTagName("fieldset")[0].children).forEach(elm => {
+        if(elm.children.length > 1) {
+            url += encodeURIComponent(elm.children[1].name) + "=" + encodeURIComponent(elm.children[1].value.replace(/\n/g, "<br>")) + "&";
+        }
+    });
+    var newW = window.open("url", "_blank");
+    setTimeout(function(){newW.location = url}, 50);
+}
