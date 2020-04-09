@@ -98,6 +98,7 @@
                 <label for="info">卡牌資訊(隊伍技能、組合技能) <a href="javascript:addMec()">幫我加上機械族特性</a></label>
                 <textarea class="form-control" name="info" rows="6">【自製卡片】</textarea>
             </div>
+            <button id="preview" type="button" class="btn btn-success" onclick="preview()">預覽</button>
             <button id="create" type="button" class="btn btn-primary" onclick="create()">製作</button>
         </fieldset>
     </div>
