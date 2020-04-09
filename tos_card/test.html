@@ -107,6 +107,37 @@
                     
                     let Page = D.createElement("div");
                     Page.classList.add("page", "page-"+pd.pages[page].name);
+                    for(var j = 0; j < pd.pages[page].items.length; j++) {
+                        let wrap = D.createElement("div");
+                        let item = pd.pages[page].items[j];
+                        if(item.type == "generator") {
+                            if(typeof item.function == "function") {
+                                let r = item.function();
+                                if(typeof r == "string") {
+                                    wrap.innerHTML = r;
+                                }
+                            }
+                        }
+                        if(item.type == "html") {
+                            
+                        }
+                        if(item.type == "title" || item.type == "title-1") {
+                            
+                        }
+                        if(item.type == "title-2") {
+                            
+                        }
+                        if(item.type == "title-3") {
+                            
+                        }
+                        if(item.type == "text") {
+                            
+                        }
+                        if(item.type == "img") {
+                            
+                        }
+                        Page.appendChild(wrap);
+                    }
                     D.getElementById("wrapper").appendChild(Page);
                 }
             } catch(error) {
