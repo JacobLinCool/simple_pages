@@ -82,7 +82,7 @@
                 <textarea class="form-control" name="leader" rows="4"></textarea>
             </div>
             <div class="form-group">
-                <label for="img">圖片網址</label>
+                <label for="img">圖片網址 或 <input type="file" onchange="uploadImg(this.files[0]).then(id=>{document.getElementsByName('img')[0].value = 'https://imgur.com/download/'+id})"></label>
                 <input type="text" class="form-control" name="img">
             </div>
             <div class="form-group">
