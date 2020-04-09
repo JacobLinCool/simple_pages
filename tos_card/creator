@@ -103,6 +103,9 @@
         </fieldset>
     </div>
     <br><br><br>
+    <div style="display: hidden;">
+        <button id="copy_btn">Copy & Share!</button>
+    </div>
 </div>
 <script>
     function create() {
