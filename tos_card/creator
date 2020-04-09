@@ -103,7 +103,7 @@
         </fieldset>
     </div>
     <br><br><br>
-    <div style="display: hidden;">
+    <div style="display: none;">
         <button id="copy_btn">Copy & Share!</button>
     </div>
 </div>
