@@ -72,6 +72,9 @@
                         }
                     ]
                 }
+            ],
+            scripts: [
+                "creator.js"
             ]
         };
         
@@ -148,6 +151,16 @@
                 }
             } catch(error) {
                 console.error("PageBuilder Error: Failed to Render Pages.", error);
+            }
+            
+            try {
+                for(var i = 0; i < pd.scripts.length; i++) {
+                    let script = D.createElement("script");
+                    script.src = pd.scripts[i];
+                    D.body.appendChild(script);
+                }
+            } catch(error) {
+                console.error("PageBuilder Error: Failed to Render Scripts.", error);
             }
             
             togglePage(pd.pages[0].name);
