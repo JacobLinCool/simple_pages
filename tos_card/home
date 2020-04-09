@@ -1,3 +1,5 @@
-<h1>神魔之塔卡片產生器</h1>
-<span>測試版</span>
-<a href="javascript:togglePage('Creator')"><h2>開啟</h2></a>
+<div class="container">
+  <h2>神魔之塔卡片產生器</h2>
+  <span>測試版</span>
+  <a href="javascript:togglePage('Creator')"><h3>開啟</h3></a>
+</div>
