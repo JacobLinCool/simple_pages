@@ -150,7 +150,7 @@
                 console.error("PageBuilder Error: Failed to Render Pages.", error);
             }
             
-            
+            togglePage(pd.pages[0].name);
             D.getElementById("AfterLoadedCSS").innerHTML = D.getElementById("AfterLoadedCSS").innerHTML.replace("After", "Before");
         }
         
