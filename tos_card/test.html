@@ -75,7 +75,13 @@
             ]
         };
         
-        PageBuilder(pageData);
+        var targets = [];
+        targets.push(fetch("creator?v=1").then(r=>r.text()));
+        Promise.all(targets).then(sources => {
+            window.pageSources = sources;
+            pageData.pages[1].items[0].function = function() {return pageSources[0];};
+            PageBuilder(pageData);
+        });
         
         function PageBuilder(pd) {
             var D = document;
