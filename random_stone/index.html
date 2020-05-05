@@ -17,7 +17,7 @@
                 }
                 return convexHull.getHull();
             })();
-            var triset = {width: 1000, height: 1000, x_colors: []};
+            var triset = {width: 1000, height: 1000, cell_size: Math.floor(Math.random()*75)+75, x_colors: []};
             triset.x_colors = (function() {
                 var colors = [];
                 var c = Math.floor(Math.random()*5)+3;
