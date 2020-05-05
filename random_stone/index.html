@@ -46,13 +46,23 @@
         var scale = 1-2*margin/1000;
         var c = document.getElementById("canvas");
         var ctx = c.getContext("2d");
+        ctx.beginPath();
         ctx.moveTo(margin+stone.shape.points[0].x*scale, margin+stone.shape.points[0].y*scale);
         for(var i = 1; i < stone.shape.points.length; i++) {
             ctx.lineTo(margin+stone.shape.points[i].x*scale, margin+stone.shape.points[i].y*scale);
         }
         ctx.lineTo(margin+stone.shape.points[0].x*scale, margin+stone.shape.points[0].y*scale);
+        ctx.closePath();
         ctx.strokeStyle = "rgba(0,0,0,0.3)";
         ctx.stroke();
+        ctx.clip();
+        
+        var img = new Image();
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+        }
+        img.src = Trianglify(stone.color.triset).png();
+        
     }
     
     var Stone = new stone();
