@@ -46,12 +46,21 @@
         var scale = 1-2*margin/1000;
         var c = document.getElementById("canvas");
         var ctx = c.getContext("2d");
-        ctx.beginPath();
-        ctx.moveTo(margin+stone.shape.points[0].x*scale, margin+stone.shape.points[0].y*scale);
-        for(var i = 1; i < stone.shape.points.length; i++) {
-            ctx.lineTo(margin+stone.shape.points[i].x*scale, margin+stone.shape.points[i].y*scale);
+        var G = [0, 0], d = [];
+        for(var i = 0; i < stone.shape.points.length; i++) {
+            G[0] += stone.shape.points[i].x;
+            G[1] += stone.shape.points[i].y;
         }
-        ctx.lineTo(margin+stone.shape.points[0].x*scale, margin+stone.shape.points[0].y*scale);
+        G[0] = parseInt(G[0]/stone.shape.points.length);
+        G[1] = parseInt(G[1]/stone.shape.points.length);
+        d.push(500 - G[0]);
+        d.push(500 - G[1]);
+        ctx.beginPath();
+        ctx.moveTo(d[0]+margin+stone.shape.points[0].x*scale, d[1]+margin+stone.shape.points[0].y*scale);
+        for(var i = 1; i < stone.shape.points.length; i++) {
+            ctx.lineTo(d[0]+margin+stone.shape.points[i].x*scale, d[1]+margin+stone.shape.points[i].y*scale);
+        }
+        ctx.lineTo(d[0]+margin+stone.shape.points[0].x*scale, d[1]+margin+stone.shape.points[0].y*scale);
         ctx.closePath();
         ctx.strokeStyle = "rgba(0,0,0,0.3)";
         ctx.stroke();
