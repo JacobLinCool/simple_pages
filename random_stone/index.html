@@ -53,8 +53,8 @@
         }
         G[0] = parseInt(G[0]/stone.shape.points.length);
         G[1] = parseInt(G[1]/stone.shape.points.length);
-        d.push(500 - G[0]);
-        d.push(500 - G[1]);
+        d.push(Math.min(500 - G[0], 100));
+        d.push(Math.min(500 - G[1], 100));
         ctx.beginPath();
         ctx.moveTo(d[0]+margin+stone.shape.points[0].x*scale, d[1]+margin+stone.shape.points[0].y*scale);
         for(var i = 1; i < stone.shape.points.length; i++) {
