@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>踩地雷</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+</head>
+<body>
+    <canvas id="game" height="1000" width="1000" style="cursor: pointer;"></canvas>
+    <div style="opacity: 0;">
+        <i class="fas fa-flag"></i>
+        <i class="fas fa-bomb"></i>
+    </div>
+    <script>
+    var canvas = document.getElementById("game");
+    var height = canvas.width, width = canvas.width;
+    var margin = { top: 0, right: 0, bottom: 0, left: 0 };
+
+    // init game
+    document.body.onload = function() {
+        window.game = new Game();
+        game.draw();
+    }
+
+    // add listeners
+    canvas.addEventListener("click", function(event) {
+        var x = Math.floor((event.clientX - canvas.offsetLeft) / game.block.size), y = Math.floor((event.clientY - canvas.offsetTop) / game.block.size);
+        console.log("Clicked", {x, y});
+        if(!game.timer.interval) game.timer.start();
+        game.check(x, y);
+        game.draw();
+    });
+    canvas.addEventListener("contextmenu", function(event) {
+        event.preventDefault();
+        var x = Math.floor((event.clientX - canvas.offsetLeft) / game.block.size), y = Math.floor((event.clientY - canvas.offsetTop) / game.block.size);
+        console.log("Right Clicked", {x, y});
+        game.flag(x, y);
+        return false;
+    }, false);
+    canvas.addEventListener("mousemove", function(event) {
+        var x = Math.floor((event.clientX - canvas.offsetLeft) / game.block.size), y = Math.floor((event.clientY - canvas.offsetTop) / game.block.size);
+        game.hover = {x, y};
+        game.draw();
+    });
+    canvas.addEventListener("mouseleave", function(event) {
+        game.hover = {x: -1, y: -1};
+        game.draw();
+    });
+
+    function Game(cnv=canvas, size=20, mine=0.1) {
+        // canvas
+        this.ctx = cnv.getContext("2d");
+
+        // preprocess size
+        size = Math.floor(size);
+
+        // preprocess mine
+        if(mine < 1) {
+            mine = Math.floor(size*size*mine);
+        }
+        else {
+            mine = Math.floor(Math.min(size*size, mine));
+        }
+
+        this.result = 0;
+        this.size = size;
+        this.mine = mine;
+        this.map = [], this.text = [];
+        this.block = {
+            size: width / this.size
+        };
+        this.hover = {x: -1, y: -1};
+
+        // build empty map
+        for(var i = 0; i < size; i++) {
+            var cols = [], text = [];
+            for(var j = 0; j < size; j++) {
+                cols.push(0);
+                text.push("");
+            }
+            this.map.push(cols);
+            this.text.push(text);
+        }
+
+        // place mines
+        for(var i = 0; i < mine; i++) {
+            var x = Math.floor(Math.random()*size), y = Math.floor(Math.random()*size);
+            if(this.map[x][y]) i--;
+            else {
+                this.map[x][y] = 1;
+            }
+        }
+
+        // timer
+        this.timer = {
+            time: 0,
+            interval: 0,
+            startTime: 0,
+            endTime: 0,
+            checkTick: 50,
+            start: function() {
+                this.startTime = Date.now();
+                this.interval = setInterval((function(self) {
+                    return function() {
+                        self.time += 100;
+                        if(!(--self.checkTick)) {
+                            self.checkTick = 50;
+                            time = Date.now() - this.startTime;
+                        }
+                    };
+                })(this), 100);
+            },
+            stop: function() {
+                this.endTime = Date.now();
+                clearInterval(this.interval);
+                this.interval = 0;
+                setTimeout((function(self) {
+                    return function() {
+                        self.time = self.endTime - self.startTime;
+                    };
+                })(this), 110);
+            },
+            reset: function() {
+                try{this.stop()} catch(e){}
+                this.time = 0;
+                this.interval = 0;
+                this.startTime = 0;
+                this.endTime = 0;
+                this.checkTick = 50;
+                return this;
+            }
+        };
+
+        // draw
+        this.draw = function() {
+            var ctx = this.ctx;
+            for(var i = 0; i < this.size; i++) {
+                for(var j = 0; j < this.size; j++) {
+                    if(this.map[i][j] == 0 || this.map[i][j] == 1) {
+                        ctx.fillStyle = "FloralWhite";
+                    }
+                    else if(this.map[i][j] == 2) {
+                        ctx.fillStyle = "White";
+                    }
+                    ctx.fillRect(this.block.size * j + margin.left, this.block.size * i + margin.top, this.block.size, this.block.size);
+                    ctx.beginPath();
+                    ctx.rect(this.block.size * j + margin.left, this.block.size * i + margin.top, this.block.size, this.block.size);
+                    ctx.closePath();
+                    ctx.strokeStyle = "Gray";
+                    ctx.stroke();
+                    if(this.text[i][j] == "\uf1e2") {
+                        ctx.font = "900 "+(this.block.size*0.8).toString()+"px 'Font Awesome 5 Free'";
+                        ctx.fillStyle = "Maroon";
+                    }
+                    else if(this.text[i][j] == "\uf024") {
+                        ctx.font = "900 "+(this.block.size*0.8).toString()+"px 'Font Awesome 5 Free'";
+                        ctx.fillStyle = "MediumSpringGreen";
+                    }
+                    else {
+                        ctx.font = "400 "+this.block.size.toString()+"px Arial";
+                        switch(this.text[i][j]) {
+                            case 1:
+                            ctx.fillStyle = "LightSkyBlue";
+                            break;
+                            case 2:
+                            ctx.fillStyle = "LightGreen";
+                            break;
+                            case 3:
+                            ctx.fillStyle = "LightCoral";
+                            break;
+                        }
+                    }
+                    ctx.fillText(this.text[i][j], this.block.size * (j+0.15) + margin.left, this.block.size * (i+0.85) + margin.top);
+                    if(this.hover.y == i && this.hover.x == j) {
+                        ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+                        ctx.fillRect(this.block.size * j + margin.left, this.block.size * i + margin.top, this.block.size, this.block.size);
+                    }
+                }
+            }
+            if(this.result == 1) {
+                ctx.fillStyle = "Black";
+                ctx.font = "900 "+(width/10).toString()+"px Arial";
+                ctx.fillText("You Win!", width*0.1 + margin.left, height*0.45 + margin.top);
+            }
+            else if(this.result == 2) {
+                ctx.fillStyle = "Black";
+                ctx.font = "900 "+(width/10).toString()+"px Arial";
+                ctx.fillText("You Lose!", width*0.225 + margin.left, height*0.525 + margin.top);
+            }
+        };
+
+        // check block
+        this.check = function(x, y) {
+            if(this.text[y][x] == "\uf024") return;
+            if(this.map[y][x] == 1) {
+                this.boomb(x, y);
+            }
+            else this.search(x, y);
+        };
+
+        // search space
+        this.search = async function(x, y) {
+            const delay = (t) => {
+                return new Promise(resolve => {
+                    setTimeout(resolve, t);
+                });
+            };
+            this.map[y][x] = 2;
+            if(!this.left()) this.result = 1;
+            var l = (x > 0), t = (y > 0), r = (x < this.size - 1), b = (y < this.size - 1);
+            var boomb = 0;
+
+            if(l && this.map[y][x-1] == 1) boomb++;
+            if(t && this.map[y-1][x] == 1) boomb++;
+            if(r && this.map[y][x+1] == 1) boomb++;
+            if(b && this.map[y+1][x] == 1) boomb++;
+            if(l && t && this.map[y-1][x-1] == 1) boomb++;
+            if(t && r && this.map[y-1][x+1] == 1) boomb++;
+            if(r && b && this.map[y+1][x+1] == 1) boomb++;
+            if(b && l && this.map[y+1][x-1] == 1) boomb++;
+
+            if(!boomb) {
+                this.text[y][x] = "";
+                await delay(20);
+                if(l && this.map[y][x-1] == 0) this.search(x - 1, y);
+                if(t && this.map[y-1][x] == 0) this.search(x, y - 1);
+                if(r && this.map[y][x+1] == 0) this.search(x + 1, y);
+                if(b && this.map[y+1][x] == 0) this.search(x, y + 1);
+            }
+            else this.text[y][x] = boomb;
+
+            this.draw();
+        };
+
+        // flag
+        this.flag = function(x, y) {
+            if(this.text[y][x] == "\uf024") this.text[y][x] = "";
+            else if(this.text[y][x] == "" && this.map[y][x] != 2) this.text[y][x] = "\uf024";
+            this.draw();
+        }
+
+        // boomb!
+        this.boomb = function(x, y) {
+            this.findMine = this.mine;
+            this.tempMap = [];
+            for(var i = 0; i < this.size; i++) {
+                var cols = [];
+                for(var j = 0; j < this.size; j++) {
+                    cols.push(0);
+                }
+                this.tempMap.push(cols);
+            }
+
+            this.boombSearch(x, y);
+        }
+        //; boomb search
+        this.boombSearch = async function(x, y) {
+            const delay = (t) => {
+                return new Promise(resolve => {
+                    setTimeout(resolve, t);
+                });
+            };
+            var l = (x > 0), t = (y > 0), r = (x < this.size - 1), b = (y < this.size - 1);
+            this.tempMap[y][x] = 1;
+            this.findMine--;
+            if(this.findMine <= 0) {
+                this.result = 2;
+            }
+
+            await delay(50);
+            if(l && this.tempMap[y][x-1] == 0) this.boombSearch(x - 1, y);
+            if(t && this.tempMap[y-1][x] == 0) this.boombSearch(x, y - 1);
+            if(r && this.tempMap[y][x+1] == 0) this.boombSearch(x + 1, y);
+            if(b && this.tempMap[y+1][x] == 0) this.boombSearch(x, y + 1);
+
+            if(this.map[y][x] == 1) {
+                this.text[y][x] = "\uf1e2";
+                this.draw();
+            }
+        }
+
+        // left mine
+        this.left = function() {
+            var total = 0;
+            for(var i = 0; i < this.size; i++) {
+                for(var j = 0; j < this.size; j++) {
+                    if(this.map[i][j] == 0) total++;
+                }
+            }
+            return total;
+        }
+    }
+
+    </script>
+</body>
+</html>

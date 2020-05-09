@@ -1,0 +1,4 @@
+<div class="container">
+  <br>
+  <canvas id="mime"></canvas>
+</div>
