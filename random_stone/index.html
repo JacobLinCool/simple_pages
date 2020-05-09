@@ -7,8 +7,18 @@
     <script src="https://cdn.jsdelivr.net/gh/brian3kb/graham_scan_js@1.0.5/src/graham_scan.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/trianglify/2.0.0/trianglify.min.js"></script>
     <script>
-        function stone() {
-            var points = (function() {
+        var Get = (function(){
+            var x = location.search;
+            var KVs = x.search(/\?/)>-1?x.substr(x.search(/\?/)+1).split("&"):[];
+            var m = {};
+            for(i in KVs) {
+                let KV = KVs[i].split("=");
+                m[KV[0]] = decodeURIComponent(KV[1]);
+            }
+            return m;
+        })();
+        function stone(p=[],s={}) {
+            var points = (p.length>2)?p:(function() {
                 var points = [];
                 var p = 15;
                 var convexHull = new ConvexHullGrahamScan();
@@ -17,8 +27,7 @@
                 }
                 return convexHull.getHull();
             })();
-            var triset = {width: 1000, height: 1000, cell_size: Math.floor(Math.random()*75)+75, x_colors: []};
-            triset.x_colors = (function() {
+            var triset = s.x_colors?s:({width: 1000, height: 1000, cell_size: Math.floor(Math.random()*75)+75, x_colors: (function() {
                 var colors = [];
                 var c = Math.floor(Math.random()*5)+3;
                 for(var i = 0; i < c; i++){
@@ -33,7 +42,7 @@
                     })`);
             }
             return colors;
-        })();
+        })()});
         this.color = {
             triset: triset
         };
@@ -74,8 +83,12 @@
         img.src = Trianglify(stone.color.triset).png();
         
     }
-    
-    var Stone = new stone();
+    if(Get["stone"]) {
+        var Stone = new stone(JSON.parse(atob(Get["stone"]).split(";;")[0]), JSON.parse(atob(Get["stone"]).split(";;")[1]));
+    }
+    else {
+        var Stone = new stone();
+    }
     history.pushState("", "", "?stone="+Stone.code);
     drawStone(Stone);
 </script>
