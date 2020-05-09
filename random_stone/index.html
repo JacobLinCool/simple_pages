@@ -40,6 +40,7 @@
         this.shape = {
             points: points
         };
+        this.code = btoa(JSON.stringify(this.shape.points)+";;"+JSON.stringify(this.color.triset));
     }
     function drawStone(stone) {
         var margin = 100;
