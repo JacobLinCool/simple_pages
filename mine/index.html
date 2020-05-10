@@ -14,7 +14,7 @@
     </div>
     <script>
     var canvas = document.getElementById("game");
-    var height = canvas.width, width = canvas.width;
+    var height = parseInt(getComputedStyle(canvas, null).getPropertyValue("width")), width = parseInt(getComputedStyle(canvas, null).getPropertyValue("width"));
     var margin = { top: 0, right: 0, bottom: 0, left: 0 };
 
     // init game
