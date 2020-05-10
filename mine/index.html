@@ -25,7 +25,7 @@
 
     // add listeners
     canvas.addEventListener("click", function(event) {
-        var x = Math.floor(event.offsetX / game.block.size), y = Math.floor(event.offsetY / game.block.size);
+        var x = Math.floor(event.offsetX / game.block.dSize), y = Math.floor(event.offsetY / game.block.dSize);
         console.log("Clicked", {x, y});
         if(!game.timer.interval) game.timer.start();
         game.check(x, y);
@@ -33,13 +33,13 @@
     });
     canvas.addEventListener("contextmenu", function(event) {
         event.preventDefault();
-        var x = Math.floor(event.offsetX / game.block.size), y = Math.floor(event.offsetY / game.block.size);
+        var x = Math.floor(event.offsetX / game.block.dSize), y = Math.floor(event.offsetY / game.block.dSize);
         console.log("Right Clicked", {x, y});
         game.flag(x, y);
         return false;
     }, false);
     canvas.addEventListener("mousemove", function(event) {
-        var x = Math.floor(event.offsetX / game.block.size), y = Math.floor(event.offsetY / game.block.size);
+        var x = Math.floor(event.offsetX / game.block.dSize), y = Math.floor(event.offsetY / game.block.dSize);
         game.hover = {x, y};
         game.draw();
     });
@@ -68,7 +68,8 @@
         this.mine = mine;
         this.map = [], this.text = [];
         this.block = {
-            size: cnv.width / this.size
+            size: cnv.width / this.size,
+            dSize: width / this.size
         };
         this.hover = {x: -1, y: -1};
 
