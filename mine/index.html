@@ -25,7 +25,7 @@
 
     // add listeners
     canvas.addEventListener("click", function(event) {
-        var x = Math.floor((event.clientX - canvas.offsetLeft) / game.block.size), y = Math.floor((event.clientY - canvas.offsetTop) / game.block.size);
+        var x = Math.floor((event.offsetX - canvas.offsetLeft) / game.block.size), y = Math.floor((event.offsetY - canvas.offsetTop) / game.block.size);
         console.log("Clicked", {x, y});
         if(!game.timer.interval) game.timer.start();
         game.check(x, y);
@@ -33,13 +33,13 @@
     });
     canvas.addEventListener("contextmenu", function(event) {
         event.preventDefault();
-        var x = Math.floor((event.clientX - canvas.offsetLeft) / game.block.size), y = Math.floor((event.clientY - canvas.offsetTop) / game.block.size);
+        var x = Math.floor((event.offsetX - canvas.offsetLeft) / game.block.size), y = Math.floor((event.offsetY - canvas.offsetTop) / game.block.size);
         console.log("Right Clicked", {x, y});
         game.flag(x, y);
         return false;
     }, false);
     canvas.addEventListener("mousemove", function(event) {
-        var x = Math.floor((event.clientX - canvas.offsetLeft) / game.block.size), y = Math.floor((event.clientY - canvas.offsetTop) / game.block.size);
+        var x = Math.floor((event.offsetX - canvas.offsetLeft) / game.block.size), y = Math.floor((event.offsetY - canvas.offsetTop) / game.block.size);
         game.hover = {x, y};
         game.draw();
     });
