@@ -181,7 +181,8 @@
             if(this.result == 1) {
                 ctx.fillStyle = "Black";
                 ctx.font = "900 "+(width/10).toString()+"px Arial";
-                ctx.fillText("You Win!", cnv.width*0.1 + margin.left, cnv.height*0.45 + margin.top);
+                ctx.fillText("You Win!", cnv.width*0.225 + margin.left, cnv.height*0.525 + margin.top);
+                ctx.fillText("Time Used: " + (Math.floor(this.timer.time/100)/10) + " Seconds", cnv.width*0.225 + margin.left, cnv.height*0.775 + margin.top);
             }
             else if(this.result == 2) {
                 ctx.fillStyle = "Black";
@@ -207,7 +208,10 @@
                 });
             };
             this.map[y][x] = 2;
-            if(!this.left()) this.result = 1;
+            if(!this.left()) {
+                this.timer.stop();
+                this.result = 1;
+            }
             var l = (x > 0), t = (y > 0), r = (x < this.size - 1), b = (y < this.size - 1);
             var boomb = 0;
 
@@ -265,6 +269,7 @@
             this.tempMap[y][x] = 1;
             this.findMine--;
             if(this.findMine <= 0) {
+                this.timer.stop();
                 this.result = 2;
             }
 
