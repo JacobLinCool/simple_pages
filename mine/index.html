@@ -25,7 +25,7 @@
 
     // add listeners
     canvas.addEventListener("click", function(event) {
-        var x = Math.floor((event.offsetX - canvas.offsetLeft) / game.block.size), y = Math.floor((event.offsetY - canvas.offsetTop) / game.block.size);
+        var x = Math.floor(event.offsetX / game.block.size), y = Math.floor(event.offsetY / game.block.size);
         console.log("Clicked", {x, y});
         if(!game.timer.interval) game.timer.start();
         game.check(x, y);
@@ -33,13 +33,13 @@
     });
     canvas.addEventListener("contextmenu", function(event) {
         event.preventDefault();
-        var x = Math.floor((event.offsetX - canvas.offsetLeft) / game.block.size), y = Math.floor((event.offsetY - canvas.offsetTop) / game.block.size);
+        var x = Math.floor(event.offsetX / game.block.size), y = Math.floor(event.offsetY / game.block.size);
         console.log("Right Clicked", {x, y});
         game.flag(x, y);
         return false;
     }, false);
     canvas.addEventListener("mousemove", function(event) {
-        var x = Math.floor((event.offsetX - canvas.offsetLeft) / game.block.size), y = Math.floor((event.offsetY - canvas.offsetTop) / game.block.size);
+        var x = Math.floor(event.offsetX / game.block.size), y = Math.floor(event.offsetY / game.block.size);
         game.hover = {x, y};
         game.draw();
     });
@@ -68,7 +68,7 @@
         this.mine = mine;
         this.map = [], this.text = [];
         this.block = {
-            size: width / this.size
+            size: cnv.width / this.size
         };
         this.hover = {x: -1, y: -1};
 
@@ -181,12 +181,12 @@
             if(this.result == 1) {
                 ctx.fillStyle = "Black";
                 ctx.font = "900 "+(width/10).toString()+"px Arial";
-                ctx.fillText("You Win!", width*0.1 + margin.left, height*0.45 + margin.top);
+                ctx.fillText("You Win!", cnv.width*0.1 + margin.left, cnv.height*0.45 + margin.top);
             }
             else if(this.result == 2) {
                 ctx.fillStyle = "Black";
                 ctx.font = "900 "+(width/10).toString()+"px Arial";
-                ctx.fillText("You Lose!", width*0.225 + margin.left, height*0.525 + margin.top);
+                ctx.fillText("You Lose!", cnv.width*0.225 + margin.left, cnv.height*0.525 + margin.top);
             }
         };
 
