@@ -31,7 +31,7 @@
 
     // init game
     document.body.onload = function() {
-        window.game = new Game(canvas, (Get["size"] ? parseInt(Get["size"]) : 20), (Get["mine"] ? parseInt(Get["mine"]) : 0.1));
+        window.game = new Game(canvas, (Get["size"] ? parseFloat(Get["size"]) : 20), (Get["mine"] ? parseFloat(Get["mine"]) : 0.1));
         game.draw();
     }
 
