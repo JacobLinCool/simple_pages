@@ -17,9 +17,21 @@
     var height = parseInt(getComputedStyle(canvas, null).getPropertyValue("width")), width = parseInt(getComputedStyle(canvas, null).getPropertyValue("width"));
     var margin = { top: 0, right: 0, bottom: 0, left: 0 };
 
+    // quary string collecting
+    var Get = (function(){
+        var x = location.href;
+        var KVs = x.search(/\?/)>-1?x.substr(x.search(/\?/)+1).split("&"):[];
+        var m = {};
+        for(i in KVs) {
+            let KV = KVs[i].split("=");
+            m[KV[0]] = decodeURIComponent(KV[1]);
+        }
+        return m;
+    })();
+
     // init game
     document.body.onload = function() {
-        window.game = new Game();
+        window.game = new Game(canvas, (Get["size"] ? parseInt(Get["size"]) : 20), (Get["mine"] ? parseInt(Get["mine"]) : 0.1));
         game.draw();
     }
 
@@ -169,6 +181,19 @@
                             break;
                             case 3:
                             ctx.fillStyle = "LightCoral";
+                            break;
+                            case 4:
+                            ctx.fillStyle =  "MediumPurple";
+                            break;
+                            case 5:
+                            ctx.fillStyle =  "RebeccaPurple";
+                            break;
+                            case 6:
+                            ctx.fillStyle =  "Purple";
+                            break;
+                            case 7:
+                            case 8:
+                            ctx.fillStyle =  "Black";
                             break;
                         }
                     }
