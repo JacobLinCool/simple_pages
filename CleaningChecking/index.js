@@ -91,7 +91,7 @@ function genSeatsChecks() {
     }
   }
   for(var i = 0; i < jobs.length; i++) {
-    if(jobs[i] != "無" && jobs[i].substring(0,1) == "內") {
+    if(jobs[i] != "無" /* && jobs[i].substring(0,1) == "內" */) {
       document.getElementById("jobs").innerHTML += `
                 <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" id="job_${i}">
