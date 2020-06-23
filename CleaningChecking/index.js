@@ -46,23 +46,23 @@ var firebaseConfig = {
 var jobs = [
   "",
   "內掃-掃教室",  /* 1 */
-  "無",
+  "不用打掃的幹部",
   "內掃-掃教室",
   "內掃-掃教室",
   "外掃-廣場以東",
   "內掃-掃具櫃＋置物櫃",  /* 6 */
-  "無",
+  "記人的幹部",
   "內掃-回收",
   "內掃-窗戶",
   "內掃-拖教室",
   "外掃-廣場以東",  /* 11 */
-  "無",
+  "不用打掃的幹部",
   "",
   "內掃-回收",
-  "無",
+  "不用打掃的幹部",
   "外掃-廣場以東",  /* 16 */
   "外掃-廣場以東",
-  "無",
+  "管打掃的幹部",
   "內掃-黑板＋講桌整理",
   "內掃-拖走廊",
   "外掃-廣場以東",  /* 21 */
@@ -91,7 +91,7 @@ function genSeatsChecks() {
     }
   }
   for(var i = 0; i < jobs.length; i++) {
-    if(jobs[i] != "無" /* && jobs[i].substring(0,1) == "內" */) {
+    if(jobs[i] && jobs[i] != "無") {
       document.getElementById("jobs").innerHTML += `
                 <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" id="job_${i}">
