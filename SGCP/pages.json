@@ -1,13 +1,13 @@
 [
     {
         "url": "page/login.html",
-        "setting": {
+        "settings": {
             "name": "login"
         }
     },
     {
         "url": "page/home.html",
-        "setting": {
+        "settings": {
             "name": "home"
         }
     }
