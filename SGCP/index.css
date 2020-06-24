@@ -7,4 +7,5 @@
 }
 .page {
     display: block;
+    margin: auto 8px;
 }

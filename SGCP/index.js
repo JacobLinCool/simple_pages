@@ -203,8 +203,8 @@ function pageSwitcher(list) {
 
 async function loginWithEP() {
     var form = document.getElementById("login-form");
-    var email = form.getElementById("email").value;
-    var password = form.getElementById("password").value;
+    var email = form.getElementsByClassName("email")[0].value;
+    var password = form.getElementsByClassName("password")[0].value;
     user.logIn({email, password}).then(r => {
         safeLog(r);
     });
@@ -212,9 +212,9 @@ async function loginWithEP() {
 
 async function createWithEP() {
     var form = document.getElementById("register-form");
-    var email = form.getElementById("email");
-    var password = form.getElementById("password").value;
-    var password2 = form.getElementById("password2").value;
+    var email = form.getElementsByClassName("email")[0].value;
+    var password = form.getElementsByClassName("password")[0].value;
+    var password2 = form.getElementsByClassName("password2")[0].value;
     if(password === password2) {
         user.create({email, password}).then(r => {
             safeLog(r);
