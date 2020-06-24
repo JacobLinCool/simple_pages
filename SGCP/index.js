@@ -207,7 +207,7 @@ async function loginWithEP() {
     var email = form.getElementsByClassName("email")[0].value;
     var password = form.getElementsByClassName("password")[0].value;
     user.logIn({email, password}).then(r => {
-        safeLog(r);
+        location.reload();
     });
 }
 
@@ -218,7 +218,7 @@ async function createWithEP() {
     var password2 = form.getElementsByClassName("password2")[0].value;
     if(password === password2) {
         user.create({email, password}).then(r => {
-            safeLog(r);
+            location.reload();
         });
     }
     else {
