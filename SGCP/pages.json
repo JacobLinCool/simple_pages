@@ -2,13 +2,15 @@
     {
         "url": "page/login.html",
         "settings": {
-            "name": "login"
+            "name": "login",
+            "classes": ["loggedHide"]
         }
     },
     {
         "url": "page/home.html",
         "settings": {
-            "name": "home"
+            "name": "home",
+            "classes": ["logged"]
         }
     }
 ]

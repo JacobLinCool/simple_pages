@@ -8,6 +8,24 @@ window.addEventListener("load", async () => {
 });
 
 function main() {
+    user.after(function() {
+        if(user.getState().login) {
+            Array.from(document.querySelectorAll(".nav-item.loggedHide")).forEach(elm => {
+                elm.style.display = "none";
+            });
+            Array.from(document.querySelectorAll(".nav-item.logged")).forEach(elm => {
+                elm.style.display = "";
+            });
+        }
+        else {
+            Array.from(document.querySelectorAll(".nav-item.loggedHide")).forEach(elm => {
+                elm.style.display = "";
+            });
+            Array.from(document.querySelectorAll(".nav-item.logged")).forEach(elm => {
+                elm.style.display = "none";
+            });
+        }
+    });
     if(user.getState().login) {
         switcher.go("home");
     }
@@ -34,6 +52,7 @@ async function setUpFirebase() {
 }
 
 function user() {
+    this.changed = false;
     this.state = { login: false };
     firebase.auth().useDeviceLanguage();
     firebase.auth().onAuthStateChanged(user => {
@@ -50,6 +69,7 @@ function user() {
             this.state = { login: false };
         }
         this.afterChanged();
+        this.changed = true;
     });
     this.getState = async function() {
         return this.state;
@@ -59,6 +79,7 @@ function user() {
     };
     this.after = async function(after) {
         this.afterChanged = after;
+        if(this.changed) this.afterChanged();
         return true;
     };
     this.create = async function(data) {
@@ -138,6 +159,12 @@ async function buildPage(pageURL="pages") {
         navbar.appendChild(btnWrap);
         pageContainers.appendChild(pageContainer);
         btn.innerHTML = page.settings.name;
+        if(page.settings.classes) {
+            page.settings.classes.forEach(cls => {
+                btnWrap.classList.add(cls);
+                pageContainer.classList.add(cls);
+            });
+        }
 
         pageList.push({settings: page.settings, trigger: btnWrap, target: pageContainer});
     });
