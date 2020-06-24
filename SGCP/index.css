@@ -9,3 +9,6 @@
     display: block;
     margin: auto 8px;
 }
+.nav-item {
+    cursor: pointer;
+}
