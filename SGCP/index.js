@@ -3,7 +3,7 @@
 window.addEventListener("load", async () => {
     await setUpFirebase();
     window.user = new user();
-    await buildPage("pages.json");
+    await buildPage("https://jacoblincool.github.io/simple_pages/SGCP/pages.json");
     await user.after(main);
 });
 
@@ -46,19 +46,19 @@ function user() {
             this.state.anonymous = user.isAnonymous;
             this.state.uid = user.uid;
             this.state.provider = user.providerData;
-            this.afterLogin();
         } else {
             this.state = { login: false };
         }
+        this.afterChanged();
     });
     this.getState = async function() {
         return this.state;
     };
-    this.afterLogin = function() {
+    this.afterChanged = function() {
         safeLog("[User] User State Changed.", this.state);
     };
     this.after = async function(after) {
-        this.afterLogin = after;
+        this.afterChanged = after;
         return true;
     };
     this.create = async function(data) {
