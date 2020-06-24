@@ -200,3 +200,27 @@ function pageSwitcher(list) {
         });
     });
 }
+
+async function loginWithEP() {
+    var form = document.getElementById("login-form");
+    var email = form.getElementById("email").value;
+    var password = form.getElementById("password").value;
+    user.logIn({email, password}).then(r => {
+        safeLog(r);
+    });
+}
+
+async function createWithEP() {
+    var form = document.getElementById("register-form");
+    var email = form.getElementById("email");
+    var password = form.getElementById("password").value;
+    var password2 = form.getElementById("password2").value;
+    if(password === password2) {
+        user.create({email, password}).then(r => {
+            safeLog(r);
+        });
+    }
+    else {
+        safeLog("Not the Same.");
+    }
+}

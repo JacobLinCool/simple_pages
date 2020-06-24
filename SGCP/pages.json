@@ -7,6 +7,13 @@
         }
     },
     {
+        "url": "page/register.html",
+        "settings": {
+            "name": "register",
+            "classes": ["loggedHide"]
+        }
+    },
+    {
         "url": "page/home.html",
         "settings": {
             "name": "home",
