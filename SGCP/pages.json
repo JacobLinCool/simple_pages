@@ -1,14 +1,14 @@
 [
     {
-        url: "page/login.html",
-        setting: {
-            name: "login"
+        "url": "page/login.html",
+        "setting": {
+            "name": "login"
         }
     },
     {
-        url: "page/home.html",
-        setting: {
-            name: "home"
+        "url": "page/home.html",
+        "setting": {
+            "name": "home"
         }
     }
 ]
