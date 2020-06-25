@@ -29,16 +29,32 @@
         }
     },
     {
-        "url": "page/messages.html",
+        "url": "page/groups.html",
         "settings": {
-            "name": "messages",
+            "name": "groups",
             "classes": ["logged"]
         }
     },
     {
-        "url": "page/room.html",
+        "url": "page/teams.html",
         "settings": {
-            "name": "room",
+            "name": "teams",
+            "classes": ["logged"]
+            "display": false
+        }
+    },
+    {
+        "url": "page/team.html",
+        "settings": {
+            "name": "team",
+            "classes": ["logged"]
+            "display": false
+        }
+    },
+    {
+        "url": "page/chat.html",
+        "settings": {
+            "name": "chat",
             "classes": ["logged"],
             "display": false,
             "fullscreen": true

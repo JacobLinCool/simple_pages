@@ -256,11 +256,12 @@ function toggleBar(t=null) {
 }
 
 async function signOut() {
-    return user.logOut();
+    await user.logOut();
+    location.reload();
 }
 
 async function signOutDeeply() {
-    var k = await user.logOut();
+    await user.logOut();
     localStorage.clear();
-    return k;
+    location.reload();
 }
