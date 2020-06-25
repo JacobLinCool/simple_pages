@@ -196,9 +196,8 @@ function pageSwitcher(list) {
                 p.target.classList.add("hide");
             }
         });
-        if(fullscreen) {
-            toggleBar(false);
-        }
+        if(fullscreen) toggleBar(false);
+        else toggleBar(true);
     };
     this.list.forEach(p => {
         p.trigger.addEventListener("click", () => {
