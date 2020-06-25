@@ -1,0 +1,12 @@
+[
+    {
+        "target": ".signOut",
+        "type": "click",
+        "function": "signOut"
+    },
+    {
+        "target": ".signOutDeeply",
+        "type": "click",
+        "function": "signOutDeeply"
+    }
+]

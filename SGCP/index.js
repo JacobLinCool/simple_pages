@@ -136,8 +136,8 @@ async function safeLog(msg=null, data=null) {
     }
 }
 
-async function buildPage(pageURL="pages") {
-    pages = await fetch(pageURL).then(r => r.json()).catch(e => {
+async function buildPage(pageURL="pages.json", listenerURL="listeners.json") {
+    var pages = await fetch(pageURL).then(r => r.json()).catch(e => {
         safeLog("[Page Builder] Error.", e);
     });
     var pageList = [];
@@ -177,6 +177,17 @@ async function buildPage(pageURL="pages") {
     });
 
     window.switcher = new pageSwitcher(pageList);
+
+    var listeners = await fetch(listenerURL).then(r => r.json()).catch(e => {
+        safeLog("[Page Builder] Error.", e);
+    });
+
+    listeners.forEach(listener => {
+        Array.from(document.querySelectorAll(listener.target)).forEach(elm => {
+            elm.addEventListener(listener.type, window[listener.function]);
+        });
+    });
+
 
     return true;
 }
@@ -242,4 +253,14 @@ function toggleBar(t=null) {
     else {
         bar.style.display = "none";
     }
+}
+
+async function signOut() {
+    return user.logOut();
+}
+
+async function signOutDeeply() {
+    var k = await user.logOut();
+    localStorage.clear();
+    return k;
 }
