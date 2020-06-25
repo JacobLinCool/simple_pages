@@ -7,7 +7,7 @@
 }
 .page {
     display: block;
-    margin: auto 8px;
+    margin: 8px;
 }
 .nav-item {
     cursor: pointer;
