@@ -73,7 +73,7 @@ function user() {
         this.afterChanged();
         this.changed = true;
     });
-    this.getState = async function() {
+    this.getState = function() {
         return this.state;
     };
     this.afterChanged = function() {
