@@ -10,6 +10,7 @@ window.addEventListener("load", async () => {
 function main() {
     safeLog("User: ", user.getState().login);
     user.after(function() {
+        safeLog("Test");
         if(user.getState().login) {
             Array.from(document.querySelectorAll(".nav-item.loggedHide")).forEach(elm => {
                 elm.style.display = "none";
