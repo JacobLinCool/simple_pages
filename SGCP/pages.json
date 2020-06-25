@@ -19,5 +19,29 @@
             "name": "home",
             "classes": ["logged"]
         }
+    },
+    {
+        "url": "page/settings.html",
+        "settings": {
+            "name": "settings",
+            "classes": ["logged"],
+            "display": false
+        }
+    },
+    {
+        "url": "page/messages.html",
+        "settings": {
+            "name": "messages",
+            "classes": ["logged"]
+        }
+    },
+    {
+        "url": "page/room.html",
+        "settings": {
+            "name": "room",
+            "classes": ["logged"],
+            "display": false,
+            "fullscreen": true
+        }
     }
 ]

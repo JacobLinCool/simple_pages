@@ -10,7 +10,6 @@ window.addEventListener("load", async () => {
 function main() {
     safeLog("User: ", user.getState().login);
     user.after(function() {
-        safeLog("Test");
         if(user.getState().login) {
             Array.from(document.querySelectorAll(".nav-item.loggedHide")).forEach(elm => {
                 elm.style.display = "none";
@@ -158,7 +157,7 @@ async function buildPage(pageURL="pages") {
         lindex.push(pageContainer);
 
         btnWrap.appendChild(btn);
-        navbar.appendChild(btnWrap);
+        if(page.settings.display !== false) navbar.appendChild(btnWrap);
         pageContainers.appendChild(pageContainer);
         btn.innerHTML = page.settings.name;
         if(page.settings.classes) {
@@ -185,16 +184,21 @@ async function buildPage(pageURL="pages") {
 function pageSwitcher(list) {
     this.list = list;
     this.go = function(page) {
+        var fullscreen = false;
         this.list.forEach(p => {
             if(p.settings.name == page) {
                 p.trigger.classList.add("active");
                 p.target.classList.remove("hide");
+                if(p.settings.fullscreen) fullscreen = true;
             }
             else {
                 p.trigger.classList.remove("active");
                 p.target.classList.add("hide");
             }
         });
+        if(fullscreen) {
+            toggleBar(false);
+        }
     };
     this.list.forEach(p => {
         p.trigger.addEventListener("click", () => {
@@ -224,5 +228,19 @@ async function createWithEP() {
     }
     else {
         safeLog("Not the Same.");
+    }
+}
+
+function toggleBar(t=null) {
+    var bar = document.getElementById("bar");
+    if(t === null) {
+        if(bar.style.display == "none") t = true;
+        else t = false;
+    }
+    if(t == true) {
+        bar.style.display = "";
+    }
+    else {
+        bar.style.display = "none";
     }
 }
