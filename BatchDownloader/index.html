@@ -15,6 +15,7 @@
     <script src="https://cdn.jsdelivr.net/gh/gildas-lormeau/zip.js@master/WebContent/zip.min.js"></script>
     <script>
     zip.workerScriptsPath = "./zip/";
+    var _Zipped;
 
     async function makeZip(urls) {
         let total = urls.length, finished = 0;
@@ -38,13 +39,14 @@
                     console.log("Wrote: "+i);
                 });
             }
-            writer.close(function(file){
+            writer.close(function(Zipped){
                 var a = document.createElement("a");
                 document.body.appendChild(a);
                 a.style = "display: none";
-                url = window.URL.createObjectURL(file);
+                _Zipped = Zipped;
+                url = window.URL.createObjectURL(Zipped);
                 a.href = url;
-                a.download = "zipped.zip";
+                a.download = "files.zip";
                 a.click();
                 window.URL.revokeObjectURL(url);
             });
