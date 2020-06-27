@@ -42,20 +42,23 @@
             for(let i = 0; i < total; i++) {
                 writer.add(filenames[i], new zip.BlobReader(blobs[i]), function() {
                     console.log("[File Writer] File Written. ", {id: i, name: filenames[i], data: blobs[i]});
+                    finished++;
+                    if(finished >= total) {
+                        writer.close(Zipped => {
+                            console.log("[File Zipper] Files Zipped.  ", Zipped);
+                            var a = document.createElement("a");
+                            document.body.appendChild(a);
+                            a.style = "display: none";
+                            _Zipped = Zipped;
+                            url = window.URL.createObjectURL(Zipped);
+                            a.href = url;
+                            a.download = "files.zip";
+                            a.click();
+                            window.URL.revokeObjectURL(url);
+                        });
+                    }
                 });
             }
-            writer.close(Zipped => {
-                console.log("[File Zipper] Files Zipped.  ", Zipped);
-                var a = document.createElement("a");
-                document.body.appendChild(a);
-                a.style = "display: none";
-                _Zipped = Zipped;
-                url = window.URL.createObjectURL(Zipped);
-                a.href = url;
-                a.download = "files.zip";
-                a.click();
-                window.URL.revokeObjectURL(url);
-            });
         }, console.error);
     }
 </script>
