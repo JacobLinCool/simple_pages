@@ -38,7 +38,7 @@
                     console.log("Wrote: "+i);
                 });
             }
-            zipWriter.close(function(file){
+            writer.close(function(file){
                 var a = document.createElement("a");
                 document.body.appendChild(a);
                 a.style = "display: none";
