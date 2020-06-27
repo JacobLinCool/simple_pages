@@ -220,6 +220,7 @@
             </div>
         </div>
         <button id="download" type="button" class="btn btn-primary">Download</button>
+        <p id="log"></p>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
@@ -244,8 +245,11 @@
     makeVar("");
 
     function Download() {
+        document.getElementById("log").innerHTML = "";
         document.getElementById("download").disabled = true;
+        log("Initializing.");
         let base = document.getElementById("baseURL").value, vars = [], varN = makeVar(base), maxN = 1, URLs = [];
+        log("Generating Targets.");
         for(let i = 0; i < varN; i++) {
             vars.push({
                 type: document.getElementsByClassName("type")[i].value,
@@ -273,12 +277,16 @@
         }
 
         if(varN > 0) urls(0, base);
+        log("All Targets Generated.");
+        makeZip(URLs).then(()=>{
+            document.getElementById("download").disabled = false;
+        });
 
-        document.getElementById("download").disabled = false;
-
-        makeZip(URLs);
     }
 
+    function log(t) {
+        document.getElementById("log").innerHTML += t + "<br>";
+    }
 
     function switchType(select, types) {
         this.select = select;
@@ -323,30 +331,37 @@
         let total = urls.length, finished = 0;
         let promises = [], blobs = [], filenames = [];
         console.log("[Downloader] Start Fetching Files. ");
+        log("[Downloader] Start Fetching Files. ");
         for(let i = 0; i < total; i++) {
             filenames.push(urls[i].substring(urls[i].lastIndexOf("/")+1));
             console.log("[Downloader] Fetching File. ", {id: i, name: filenames[i]});
+            log("[Downloader] Downloading "+filenames[i]);
             promises.push(
                 fetch(urls[i]).then(response => {
                     if(response.ok) return response.blob();
                     throw new Error("Server Did Not Return 2XX Status Code.");
                 }).then(blob => {
                     console.log("[Downloader] Fetched File. ", {id: i, name: filenames[i], data: blob});
+                    log("[Downloader] "+filenames[i]+" Downloaded.");
                     return blob;
                 }).catch(error => {
                     console.error("[Downloader] Fetch Error. ", error.message);
+                    log("[Downloader] Error. Failed to Download "+filenames[i]);
                 })
             );
         }
         blobs = await Promise.all(promises);
 
         zip.createWriter(new zip.BlobWriter("application/zip"), function(writer) {
+            log("[File Writer] Writing Files.");
             for(let i = 0; i < total; i++) {
                 writer.add(filenames[i], new zip.BlobReader(blobs[i]), function() {
+                    log("[File Writer] File Written. "+filenames[i]);
                     console.log("[File Writer] File Written. ", {id: i, name: filenames[i], data: blobs[i]});
                     finished++;
                     if(finished >= total) {
                         writer.close(Zipped => {
+                            log("[File Writer] All Files Written.");
                             console.log("[File Zipper] Files Zipped.  ", Zipped);
                             var a = document.createElement("a");
                             document.body.appendChild(a);
@@ -355,6 +370,7 @@
                             url = window.URL.createObjectURL(Zipped);
                             a.href = url;
                             a.download = "files.zip";
+                            log("Downloading Zipped Files From Local Server.");
                             a.click();
                             window.URL.revokeObjectURL(url);
                         });
