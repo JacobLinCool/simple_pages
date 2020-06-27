@@ -20,14 +20,17 @@
     async function makeZip(urls) {
         let total = urls.length, finished = 0;
         let promises = [], blobs = [], filenames = [];
+        console.log("[Downloader] Start Fetching Files. ");
         for(let i = 0; i < total; i++) {
             filenames.push(urls[i].substring(urls[i].lastIndexOf("/")+1));
+            console.log("[Downloader] Fetching File. ", {id: i, name: filenames[i]});
             promises.push(
                 fetch(urls[i]).then(response => {
+                    console.log("[Downloader] Fetched File. ", {id: i, name: filenames[i]});
                     if(response.ok) return response.blob();
-                    throw new Error('Network response was not ok.');
+                    throw new Error("Server Did Not Return 2XX Status Code.");
                 }).catch(error => {
-                    console.log('There has been a problem with your fetch operation: ', error.message);
+                    console.error("[Downloader] Fetch Error. ", error.message);
                 })
             );
         }
@@ -36,10 +39,11 @@
         zip.createWriter(new zip.BlobWriter("application/zip"), function(writer) {
             for(let i = 0; i < total; i++) {
                 writer.add(filenames[i], new zip.BlobReader(blobs[i]), function() {
-                    console.log("Wrote: "+i);
+                    console.log("[File Writer] File Written. ", {id: i, name: filenames[i], data: blobs[i]});
                 });
             }
-            writer.close(function(Zipped){
+            writer.close(Zipped => {
+                console.log("[File Zipper] Files Zipped.  ", Zipped);
                 var a = document.createElement("a");
                 document.body.appendChild(a);
                 a.style = "display: none";
