@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Batch Downloader</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/flatly/bootstrap.min.css" rel="stylesheet">
+    <link href="index.css" rel="stylesheet">
+</head>
+<body>
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gildas-lormeau/zip.js@master/WebContent/zip.min.js"></script>
+    <script>
+    zip.workerScriptsPath = "./zip/";
+
+    async function makeZip(urls) {
+        let total = urls.length, finished = 0;
+        let promises = [], blobs = [], filenames = [];
+        for(let i = 0; i < total; i++) {
+            filenames.push(urls[i].substring(urls[i].lastIndexOf("/")+1));
+            promises.push(
+                fetch(urls[i]).then(response => {
+                    if(response.ok) return response.blob();
+                    throw new Error('Network response was not ok.');
+                }).catch(error => {
+                    console.log('There has been a problem with your fetch operation: ', error.message);
+                })
+            );
+        }
+        blobs = await Promise.all(promises);
+
+        zip.createWriter(new zip.BlobWriter("application/zip"), function(writer) {
+            for(let i = 0; i < total; i++) {
+                writer.add(filenames[i], new zip.BlobReader(blobs[i]), function() {
+                    console.log("Wrote: "+i);
+                });
+            }
+            zipWriter.close(function(file){
+                var a = document.createElement("a");
+                document.body.appendChild(a);
+                a.style = "display: none";
+                url = window.URL.createObjectURL(file);
+                a.href = url;
+                a.download = "zipped.zip";
+                a.click();
+                window.URL.revokeObjectURL(url);
+            });
+        }, console.error);
+    }
+</script>
+</body>
+</html>
