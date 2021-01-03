@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/flatly/bootstrap.min.css" rel="stylesheet">
+    <style>
+    input {
+        margin: 4px 0;
+    }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="./"></a>
+    </nav>
+    <div class="container">
+        <br>
+
+        <p>
+        </p>
+        <div class="form-group">
+            <button id="load_data" type="button" class="btn btn-primary">Load Data</button>
+            <button id="sort_by_highest_rank" type="button" class="btn btn-primary">sort_by_highest_rank</button>
+            <button id="sort_by_highest_school_rank" type="button" class="btn btn-primary">sort_by_highest_school_rank</button>
+            <input id="school" type="text" placeholder="School" class="form-control" />
+            <input id="start" type="number" placeholder="Start" class="form-control" />
+            <input id="length" type="number" placeholder="Length" class="form-control" />
+            <button id="show" type="button" class="btn btn-primary">Show</button>
+        </div>
+        <div>
+            <table id="table" class="table table-hover"></table>
+        </div>
+        <!-- <p id="log"></p> -->
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script>
+    let table = document.getElementById("table");
+    let session = 0;
+    let safe_delay = 10;
+    document.getElementById("load_data").addEventListener("click", function() {
+        load_data();
+    });
+    document.getElementById("sort_by_highest_rank").addEventListener("click", function() {
+        data.sort(sort_by_highest_rank);
+    });
+    document.getElementById("sort_by_highest_school_rank").addEventListener("click", function() {
+        data.sort(sort_by_highest_school_rank);
+    });
+    document.getElementById("show").addEventListener("click", function() {
+        show(Number(document.getElementById("start").value || 0), Number(document.getElementById("length").value || 100), Number(document.getElementById("school").value || 0));
+    });
+
+    async function show(start=0, length=100, school = null) {
+        session = Math.floor(Math.random()*1e5);
+        let self_session = session;
+        table.innerHTML = `
+        <th>學校</th>
+        <th>自然組</th>
+        <th>社會組</th>
+        <td>國文</td>
+        <td>英文</td>
+        <td>數學</td>
+        <td>自然</td>
+        <td>社會</td>`;
+        await wait(100);
+        let data = window.data;
+        if(school) data = data.filter(x => x.school[0] == school);
+        for(let i = start; i < start + length; i++) {
+            if(i >= data.length) break;
+            let row = document.createElement("tr");
+            row.id = "student_" + i;
+            let total_sci = document.createElement("th");
+            total_sci.innerHTML = data[i].statistics["Science Group"].total_grade;
+            let total_sss = document.createElement("th");
+            total_sss.innerHTML = data[i].statistics["Social Studies Group"].total_grade;
+            let school = document.createElement("th");
+            school.innerHTML = data[i].school[1];
+            let chi = document.createElement("td");
+            chi.innerHTML = data[i].scoring["Chinese"].grade;
+            let eng = document.createElement("td");
+            eng.innerHTML = data[i].scoring["English"].grade;
+            let math = document.createElement("td");
+            math.innerHTML = data[i].scoring["Mathematics"].grade;
+            let sci = document.createElement("td");
+            sci.innerHTML = data[i].scoring["Science"].grade;
+            let sss = document.createElement("td");
+            sss.innerHTML = data[i].scoring["Social Studies"].grade;
+
+            row.appendChild(school);
+            row.appendChild(total_sci);
+            row.appendChild(total_sss);
+            row.appendChild(chi);
+            row.appendChild(eng);
+            row.appendChild(math);
+            row.appendChild(sci);
+            row.appendChild(sss);
+
+            if(self_session != session) break;
+            table.appendChild(row);
+
+            await wait(safe_delay);
+        }
+
+        return true;
+    }
+
+    async function load_data() {
+        if(window.data) {
+            console.log("Data Have Been Loaded.");
+            return;
+        }
+        document.getElementById("load_data").innerHTML = "Loading Data...";
+        window.data = await fetch("https://api.npoint.io/a8c9fa6d7039f8fb65f1").then(r=>r.json());
+        document.getElementById("load_data").innerHTML = "Data Loaded";
+        return true;
+    }
+
+    function wait(t=1000) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve(t);
+            }, t);
+        });
+    }
+
+    function sort_by_highest_rank(a, b) {
+        let highest_rank = [
+            Math.min(Number(a.statistics["Science Group"].rank_by_grade.all) ? a.statistics["Science Group"].rank_by_grade.all : 1e9, Number(a.statistics["Social Studies Group"].rank_by_grade.all) ? a.statistics["Social Studies Group"].rank_by_grade.all : 1e9),
+            Math.min(Number(b.statistics["Science Group"].rank_by_grade.all) ? b.statistics["Science Group"].rank_by_grade.all : 1e9, Number(b.statistics["Social Studies Group"].rank_by_grade.all) ? b.statistics["Social Studies Group"].rank_by_grade.all : 1e9)
+        ];
+        if(highest_rank[0] != highest_rank[1]) {
+            return highest_rank[0] - highest_rank[1];
+        }
+        else return 0;
+    }
+    function sort_by_highest_school_rank(a, b) {
+        let highest_rank = [
+            Math.min(Number(a.statistics["Science Group"].rank_by_grade.school) ? a.statistics["Science Group"].rank_by_grade.school : 1e9, Number(a.statistics["Social Studies Group"].rank_by_grade.school) ? a.statistics["Social Studies Group"].rank_by_grade.school : 1e9),
+            Math.min(Number(b.statistics["Science Group"].rank_by_grade.school) ? b.statistics["Science Group"].rank_by_grade.school : 1e9, Number(b.statistics["Social Studies Group"].rank_by_grade.school) ? b.statistics["Social Studies Group"].rank_by_grade.school : 1e9)
+        ];
+        if(highest_rank[0] != highest_rank[1]) {
+            return highest_rank[0] - highest_rank[1];
+        }
+        else return 0;
+    }
+</script>
+</body>
+</html>
