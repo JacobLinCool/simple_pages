@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
+    <title>Data</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/flatly/bootstrap.min.css" rel="stylesheet">
@@ -24,6 +24,8 @@
             <button id="load_data" type="button" class="btn btn-primary">Load Data</button>
             <button id="sort_by_highest_rank" type="button" class="btn btn-primary">sort_by_highest_rank</button>
             <button id="sort_by_highest_school_rank" type="button" class="btn btn-primary">sort_by_highest_school_rank</button>
+            <button id="sort_by_highest_sci_rank" type="button" class="btn btn-primary">sort_by_highest_sci_rank</button>
+            <button id="sort_by_highest_sss_rank" type="button" class="btn btn-primary">sort_by_highest_sss_rank</button>
             <input id="school" type="text" placeholder="School" class="form-control" />
             <input id="start" type="number" placeholder="Start" class="form-control" />
             <input id="length" type="number" placeholder="Length" class="form-control" />
@@ -37,21 +39,48 @@
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script>
     let table = document.getElementById("table");
     let session = 0;
     let safe_delay = 10;
-    document.getElementById("load_data").addEventListener("click", function() {
-        load_data();
+    var data = null;
+    document.getElementById("load_data").addEventListener("click", async function() {
+        Swal.fire({ icon: "info", title: "Loading...", toast: true, position: "top-end", showConfirmButton: false, timer: 8000 });
+        await load_data();
+        Swal.fire({ icon: "success", title: "Loaded.", toast: true, position: "top-end", showConfirmButton: false, timer: 1500 });
     });
     document.getElementById("sort_by_highest_rank").addEventListener("click", function() {
-        data.sort(sort_by_highest_rank);
+        if(!data) Swal.fire({ icon: "error", title: "No Data.", toast: true, position: "top-end", showConfirmButton: false, timer: 1500 });
+        else {
+            data.sort(sort_by_highest_rank);
+            Swal.fire({ icon: "success", title: "Sorted.", toast: true, position: "top-end", showConfirmButton: false, timer: 1500 });
+        }
     });
     document.getElementById("sort_by_highest_school_rank").addEventListener("click", function() {
-        data.sort(sort_by_highest_school_rank);
+        if(!data) Swal.fire({ icon: "error", title: "No Data.", toast: true, position: "top-end", showConfirmButton: false, timer: 1500 });
+        else {
+            data.sort(sort_by_highest_school_rank);
+            Swal.fire({ icon: "success", title: "Sorted.", toast: true, position: "top-end", showConfirmButton: false, timer: 1500 });
+        }
+    });
+    document.getElementById("sort_by_highest_sci_rank").addEventListener("click", function() {
+        if(!data) Swal.fire({ icon: "error", title: "No Data.", toast: true, position: "top-end", showConfirmButton: false, timer: 1500 });
+        else {
+            data.sort(sort_by_highest_sci_rank);
+            Swal.fire({ icon: "success", title: "Sorted.", toast: true, position: "top-end", showConfirmButton: false, timer: 1500 });
+        }
+    });
+    document.getElementById("sort_by_highest_sss_rank").addEventListener("click", function() {
+        if(!data) Swal.fire({ icon: "error", title: "No Data.", toast: true, position: "top-end", showConfirmButton: false, timer: 1500 });
+        else {
+            data.sort(sort_by_highest_sss_rank);
+            Swal.fire({ icon: "success", title: "Sorted.", toast: true, position: "top-end", showConfirmButton: false, timer: 1500 });
+        }
     });
     document.getElementById("show").addEventListener("click", function() {
-        show(Number(document.getElementById("start").value || 0), Number(document.getElementById("length").value || 100), Number(document.getElementById("school").value || 0));
+        if(!data) Swal.fire({ icon: "error", title: "No Data.", toast: true, position: "top-end", showConfirmButton: false, timer: 1500 });
+        else show(Number(document.getElementById("start").value || 0), Number(document.getElementById("length").value || 100), Number(document.getElementById("school").value || 0));
     });
 
     async function show(start=0, length=100, school = null) {
@@ -61,11 +90,11 @@
         <th>學校</th>
         <th>自然組</th>
         <th>社會組</th>
-        <td>國文</td>
-        <td>英文</td>
-        <td>數學</td>
-        <td>自然</td>
-        <td>社會</td>`;
+        <th>國文</th>
+        <th>英文</th>
+        <th>數學</th>
+        <th>自然</th>
+        <th>社會</th>`;
         await wait(100);
         let data = window.data;
         if(school) data = data.filter(x => x.school[0] == school);
@@ -79,6 +108,9 @@
             total_sss.innerHTML = data[i].statistics["Social Studies Group"].total_grade;
             let school = document.createElement("th");
             school.innerHTML = data[i].school[1];
+            if(location.href.includes("##detail") && location.href.includes("##key=2021")) {
+                school.innerHTML += " " + data[i].class[1] + " 班 " + Number(data[i].seat_number) + " 號";
+            }
             let chi = document.createElement("td");
             chi.innerHTML = data[i].scoring["Chinese"].grade;
             let eng = document.createElement("td");
@@ -141,6 +173,29 @@
         let highest_rank = [
             Math.min(Number(a.statistics["Science Group"].rank_by_grade.school) ? a.statistics["Science Group"].rank_by_grade.school : 1e9, Number(a.statistics["Social Studies Group"].rank_by_grade.school) ? a.statistics["Social Studies Group"].rank_by_grade.school : 1e9),
             Math.min(Number(b.statistics["Science Group"].rank_by_grade.school) ? b.statistics["Science Group"].rank_by_grade.school : 1e9, Number(b.statistics["Social Studies Group"].rank_by_grade.school) ? b.statistics["Social Studies Group"].rank_by_grade.school : 1e9)
+        ];
+        if(highest_rank[0] != highest_rank[1]) {
+            return highest_rank[0] - highest_rank[1];
+        }
+        else if(Number(a.school[0]) != Number(b.school[0])) {
+            return Number(a.school[0]) - Number(b.school[0]);
+        }
+        else return 0;
+    }
+    function sort_by_highest_sci_rank(a, b) {
+        let highest_rank = [
+            Number(a.statistics["Science Group"].rank_by_grade.all) ? a.statistics["Science Group"].rank_by_grade.all : 1e9,
+            Number(b.statistics["Science Group"].rank_by_grade.all) ? b.statistics["Science Group"].rank_by_grade.all : 1e9
+        ];
+        if(highest_rank[0] != highest_rank[1]) {
+            return highest_rank[0] - highest_rank[1];
+        }
+        else return 0;
+    }
+    function sort_by_highest_sss_rank(a, b) {
+        let highest_rank = [
+            Number(a.statistics["Social Studies Group"].rank_by_grade.all) ? a.statistics["Social Studies Group"].rank_by_grade.all : 1e9,
+            Number(b.statistics["Social Studies Group"].rank_by_grade.all) ? b.statistics["Social Studies Group"].rank_by_grade.all : 1e9
         ];
         if(highest_rank[0] != highest_rank[1]) {
             return highest_rank[0] - highest_rank[1];
