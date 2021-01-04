@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Collect</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/flatly/bootstrap.min.css" rel="stylesheet">
+    <style>body {display: none;}</style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="./"></a>
+    </nav>
+    <div class="container">
+        <br>
+
+        <p>
+            1. If you want, set up an DNS A record forwarding to the exam website.<br>
+            2. If you want, set up an CORS server.<br>
+            3. If you want, connect VPN or something like that.<br>
+            4. If you want, try to use this tool in a good way.<br>
+            5. Please remember that commercial uses of all data are not allowed.<br>
+        </p>
+
+        <div>
+            <fieldset>
+                <div class="form-group">
+                    <label for="host">Exam Site</label>
+                    <input type="text" class="form-control" id="host" aria-describedby="host_help" placeholder="https://example.com/">
+                    <small id="host_help" class="form-text text-muted">Example: https://exam-site.com/</small>
+                </div>
+                <div class="form-group">
+                    <label for="ex_name">Exam Name</label>
+                    <input type="text" class="form-control" id="ex_name" aria-describedby="ex_name_help" placeholder="臺北區109學年度第一學期第二次學科能力測驗模擬考試">
+                    <small id="ex_name_help" class="form-text text-muted">Example: 臺北區109學年度第一學期第二次學科能力測驗模擬考試</small>
+                </div>
+                <div class="form-group">
+                    <label for="ex_code">Exam Code</label>
+                    <input type="text" class="form-control" id="ex_code" aria-describedby="ex_code_help" placeholder="TP_3092">
+                    <small id="ex_code_help" class="form-text text-muted">Example: TP_3092</small>
+                </div>
+                <div class="form-group">
+                    <label for="school_code">School Code Range</label>
+                    <input type="text" class="form-control" id="school_code" aria-describedby="school_code_help" placeholder="100:200">
+                    <small id="school_code_help" class="form-text text-muted">Example: 100:200</small>
+                </div>
+                <div class="form-group">
+                    <label for="school_gap">School Scan Max Gap</label>
+                    <input type="text" class="form-control" id="school_gap" aria-describedby="school_gap_help" placeholder="0">
+                    <small id="school_gap_help" class="form-text text-muted">Example: 10 (0 for unlimited)</small>
+                </div>
+                <div class="form-group">
+                    <label for="class_code">Class Code Range</label>
+                    <input type="text" class="form-control" id="class_code" aria-describedby="class_code_help" placeholder="300:399">
+                    <small id="class_code_help" class="form-text text-muted">Example: 300:399</small>
+                </div>
+                <div class="form-group">
+                    <label for="class_gap">Class Scan Max Gap</label>
+                    <input type="text" class="form-control" id="class_gap" aria-describedby="class_gap_help" placeholder="5">
+                    <small id="class_gap_help" class="form-text text-muted">Example: 5 (0 for unlimited)</small>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="scan()">Scan</button>
+            </fieldset>
+        </div>
+        <br>
+        <span>CONSOLE LOG</span>
+        <div id="log" style="height: 75vh; width: 100%; border: 1px solid gray; border-radius: 5px; margin: 8px 0; padding: 2px 6px;"></div>
+        <br>
+        <span>FILES</span>
+        <table id="files" style="max-height: 75vh; width: 100%; border-radius: 5px; margin: 8px 0;" class="table">
+            <tr>
+                <th scope="col" colspan="2">School</th>
+                <th scope="col" colspan="2">Class</th>
+                <th scope="col" style="max-width: 200px;">XLS</th>
+                <th scope="col" style="max-width: 200px;">JSON</th>
+            </tr>
+        </table>
+        <button type="button" class="btn btn-primary" onclick="pack_all()">Pack All</button>
+        <br><br>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stuk/jszip@3.5.0/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Stuk/jszip-utils@0.1.0/dist/jszip-utils.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.16.9/dist/xlsx.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/eligrey/FileSaver.js@2.0.4/dist/FileSaver.min.js"></script>
+    <script>
+    window.stop = false;
+    window.host = null;
+    window.exam_name = "";
+    window.exam_code = "";
+    window.school_code = [0, -1];
+    window.class_code = [0, -1];
+    window.school_gap = 1;
+    window.class_gap = 1;
+    window.console_max_lengh = 200;
+    async function scan() {
+        window.files = {};
+        window.host = document.getElementById("host").value;
+        window.exam_name = document.getElementById("ex_name").value;
+        window.exam_code = document.getElementById("ex_code").value;
+        window.school_code = document.getElementById("school_code").value.split(":").map(Number);
+        window.class_code = document.getElementById("class_code").value.split(":").map(Number);
+        window.school_gap = Number(document.getElementById("school_gap").value);
+        window.class_gap = Number(document.getElementById("class_gap").value);
+        log_to_html("===== LOG START =====");
+        await scan_schools(exam_name, exam_code);
+        log_to_html("===== LOG END =====");
+    };
+    function log_to_html(text, type="info") {
+        let span = document.createElement("p");
+
+        if(type == "info") span.style.color = "#3498db";
+        else if(type == "warn") span.style.color = "#f39c12";
+        else if(type == "error") span.style.color = "#e74c3c";
+
+        if(text.length > window.console_max_lengh) span.innerHTML = text.slice(0, window.console_max_lengh) + "...";
+        else span.innerHTML = text;
+
+        document.getElementById("log").appendChild(span);
+    }
+
+    async function scan_schools(test_name, test_code, range = window.school_code, fs = window.school_gap) {
+        let f = fs;
+        let schools = [];
+        for(let i = range[0]; i <= range[1]; i++) {
+            let s = await scan_classes(test_name, test_code, i);
+            if(s.length) {
+                console.log("Found School.", s);
+                schools.push(s);
+                f = fs;
+            }
+            else {
+                if(!(--f)) break;
+            }
+            if(stop) break;
+        }
+        return schools;
+    };
+
+    async function scan_classes(test_name, test_code, school_code, range = window.class_code, fs = window.class_gap) {
+        let f = fs;
+        let classes = [];
+        for(let i = range[0]; i <= range[1]; i++) {
+            let c = await collect(test_name, test_code, school_code, i);
+            if(c.success) {
+                console.log("Found Class.", c);
+                classes.push(c);
+                f = fs;
+            }
+            else {
+                if(!(--f)) break;
+            }
+            if(stop) break;
+        }
+        return classes;
+    };
+
+    async function collect(test_name, test_code, school_code, class_code) {
+        let success = true;
+        let result = await new JSZip.external.Promise((resolve, reject) => {
+            JSZipUtils.getBinaryContent(`${window.host}is/School/Report/${test_code}/${school_code}/${school_code}${class_code}_T_N.zip`, function(err, data) {
+                if (err) reject(err);
+                else resolve(data);
+            });
+        })
+        .then(JSZip.loadAsync)
+        .then(zip => zip.file(`${school_code}${class_code}_T_N/B204_${school_code}${class_code}_班級座號序成績統計表－無姓名.xls`).async("base64"))
+        .catch(err => {success = false;});
+
+        if(success) {
+            log_to_html(`Collected the data of School ${school_code}, Class ${class_code}.`);
+
+            window.files[school_code] ? 0 : window.files[school_code] = {};
+            window.files[school_code][class_code] = result;
+            let tr = document.createElement("tr");
+            let td = [document.createElement("td"), document.createElement("td"), document.createElement("td"), document.createElement("td")];
+            td[0].innerHTML = school_code;
+            td[0].colSpan = "2";
+            td[1].innerHTML = class_code;
+            td[1].colSpan = "2";
+            td[2].innerHTML = `<a class="btn btn-primary" href="javascript:download_xls(${school_code}, ${class_code})">Download XLS</a>`
+            td[3].innerHTML = `<a class="btn btn-primary" href="javascript:download_json(${school_code}, ${class_code})">Download JSON</a>`
+
+            td.forEach(x => {tr.appendChild(x)});
+            document.getElementById("files").appendChild(tr);
+        };
+
+        return { success: success };
+    };
+    function xls_to_json(base64_file) {
+        let file = XLSX.read(base64_file, { type: "base64" });
+        let sheet_json = XLSX.utils.sheet_to_json(file.Sheets[file.SheetNames[0]], { raw: true, defval: null });
+        let json = (a => {
+            let _school = a[2][exam_name].replace("學校名稱：", "").split("_");
+            let _class = a[6][exam_name].split("-");
+            if(_class.length == 1) _class.push(_class[0]);
+            let students = [];
+            for(let i = 6; i < a.length; i++) {
+                if(a[i][exam_name].includes("排名空白表示該科缺考、Dash表示該科未報考")) break;
+                let s = {};
+
+                s["school"] = _school || [];
+                s["class"] = _class || [];
+                s["seat_number"] = a[i]["__EMPTY"] || "";
+
+                let scoring = {};
+                scoring["Chinese"] = {
+                    "score": a[i]["__EMPTY_4"],
+                    "grade": a[i]["__EMPTY_5"],
+                    "rank": a[i]["__EMPTY_6"],
+                    "details": {
+                        "multiple_choice": a[i]["__EMPTY_2"],
+                        "writing": a[i]["__EMPTY_3"]
+                    }
+                };
+                scoring["English"] = {
+                    "score": a[i]["__EMPTY_9"],
+                    "grade": a[i]["__EMPTY_10"],
+                    "rank": a[i]["__EMPTY_11"],
+                    "details": {
+                        "multiple_choice": a[i]["__EMPTY_7"],
+                        "writing": a[i]["__EMPTY_8"]
+                    }
+                };
+                scoring["Mathematics"] = {
+                    "score": a[i]["__EMPTY_12"],
+                    "grade": a[i]["__EMPTY_13"],
+                    "rank": a[i]["__EMPTY_14"]
+                };
+                scoring["Science"] = {
+                    "score": a[i]["__EMPTY_15"],
+                    "grade": a[i]["__EMPTY_16"],
+                    "rank": a[i]["__EMPTY_17"]
+                };
+                scoring["Social Studies"] = {
+                    "score": a[i]["__EMPTY_18"],
+                    "grade": a[i]["__EMPTY_19"],
+                    "rank": a[i]["__EMPTY_20"]
+                };
+
+                let statistics = {};
+                statistics["Science Group"] = {
+                    "total_score": a[i]["__EMPTY_21"],
+                    "total_grade": a[i]["__EMPTY_22"],
+                    "rank_by_score": {
+                        "class": a[i]["__EMPTY_23"],
+                        "school": a[i]["__EMPTY_24"],
+                        "all": a[i]["__EMPTY_25"]
+                    },
+                    "rank_by_grade": {
+                        "class": a[i]["__EMPTY_26"],
+                        "school": a[i]["__EMPTY_27"],
+                        "all": a[i]["__EMPTY_28"]
+                    }
+                }
+                statistics["Social Studies Group"] = {
+                    "total_score": a[i]["__EMPTY_29"],
+                    "total_grade": a[i]["__EMPTY_30"],
+                    "rank_by_score": {
+                        "class": a[i]["__EMPTY_31"],
+                        "school": a[i]["__EMPTY_32"],
+                        "all": a[i]["__EMPTY_33"]
+                    },
+                    "rank_by_grade": {
+                        "class": a[i]["__EMPTY_34"],
+                        "school": a[i]["__EMPTY_35"],
+                        "all": a[i]["__EMPTY_36"]
+                    }
+                }
+
+                s["scoring"] = scoring;
+                s["statistics"] = statistics;
+                students.push(s);
+            }
+
+            return students;
+        })(sheet_json);
+        return json;
+    }
+    function download_xls(s, c) {
+        let a = document.createElement("a");
+        a.href = "data:application/vnd.ms-excel;base64,"+window.files[s][c];
+        a.download = `${s}_${c}.xls`;
+        a.click();
+        a.remove();
+    }
+    function download_json(s, c) {
+        let a = document.createElement("a");
+        a.href = "data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(xls_to_json(window.files[s][c])));
+        a.download = `${s}_${c}.json`;
+        a.click();
+        a.remove();
+    }
+    function pack_all() {
+        let count = 0;
+        var zip = new JSZip();
+        let xls = zip.folder("XLS");
+        let json = zip.folder("JSON");
+        Object.entries(window.files).forEach(s => {
+            let school = xls.folder(s[0]);
+            Object.entries(s[1]).forEach(c => {
+                school.file(`${s[0]}_${c[0]}.xls`, window.files[s[0]][c[0]], {base64: true});
+                console.log("Packed File " + (++count) + `: ${s[0]}_${c[0]}.xls`);
+            })
+        });
+        Object.entries(window.files).forEach(s => {
+            let school = json.folder(s[0]);
+            Object.entries(s[1]).forEach(c => {
+                school.file(`${s[0]}_${c[0]}.json`, JSON.stringify(xls_to_json(window.files[s[0]][c[0]])));
+                console.log("Packed File " + (++count) + `: ${s[0]}_${c[0]}.json`);
+            })
+        });
+        zip.generateAsync({type:"blob"})
+        .then(content => {
+            saveAs(content, "files.zip");
+        });
+    }
+    </script>
+    <script>if(prompt("Please enter the password: ") == "pascalacsap") document.body.style.display = "block";</script>
+</body>
+</html>
