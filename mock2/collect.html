@@ -119,6 +119,7 @@
         else span.innerHTML = text;
 
         document.getElementById("log").appendChild(span);
+        document.getElementById("log").scrollTop = document.getElementById("log").scrollHeight;
     }
 
     async function scan_schools(test_name, test_code, range = window.school_code, fs = window.school_gap) {
@@ -293,7 +294,7 @@
         a.click();
         a.remove();
     }
-    function pack_all() {
+    async function pack_all() {
         let count = 0;
         var zip = new JSZip();
         let xls = zip.folder("XLS");
@@ -306,19 +307,34 @@
                 (async ()=>{document.getElementById("pack_log").innerHTML = "Packed File " + (++count) + `: ${s[0]}_${c[0]}.xls`})();
             })
         });
+        let std = [];
         Object.entries(window.files).forEach(s => {
             let school = json.folder(s[0]);
             Object.entries(s[1]).forEach(c => {
-                school.file(`${s[0]}_${c[0]}.json`, JSON.stringify(xls_to_json(window.files[s[0]][c[0]])));
+                let j = xls_to_json(window.files[s[0]][c[0]]);
+                std.push(j);
+                school.file(`${s[0]}_${c[0]}.json`, JSON.stringify(j));
                 console.log("Packed File " + (++count) + `: ${s[0]}_${c[0]}.json`);
                 (async ()=>{document.getElementById("pack_log").innerHTML = "Packed File " + (++count) + `: ${s[0]}_${c[0]}.json`})();
             })
         });
+
+        json.file(`students.json`, JSON.stringify(std));
+
         zip.generateAsync({type:"blob"})
         .then(content => {
-            saveAs(content, "files.zip");
+            saveAs(content, window.exam_code + ".zip");
         });
-        (async ()=>{document.getElementById("pack_log").innerHTML = "Files Downloaded."})();
+        (async ()=>{document.getElementById("pack_log").innerHTML = "All Files Packed."})();
+    }
+    async function students_json() {
+        let std = [];
+        Object.entries(window.files).forEach(s => {
+            Object.entries(s[1]).forEach(c => {
+                xls_to_json(window.files[s[0]][c[0]]).forEach(x => {std.push(x)});
+            })
+        });
+        return std;
     }
     </script>
     <script>if(prompt("Please enter the password: ") == "pascalacsap") document.body.style.display = "block";</script>
