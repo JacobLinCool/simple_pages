@@ -75,7 +75,7 @@
                 <th scope="col" style="max-width: 200px;">JSON</th>
             </tr>
         </table>
-        <button type="button" class="btn btn-primary" onclick="pack_all()">Pack All</button>
+        <button type="button" class="btn btn-primary" onclick="pack_all()">Pack All</button><span id="pack_log" style="color: #3498db; margin: 0 4px;"></span>
         <br><br>
     </div>
 
@@ -303,6 +303,7 @@
             Object.entries(s[1]).forEach(c => {
                 school.file(`${s[0]}_${c[0]}.xls`, window.files[s[0]][c[0]], {base64: true});
                 console.log("Packed File " + (++count) + `: ${s[0]}_${c[0]}.xls`);
+                (async ()=>{document.getElementById("pack_log").innerHTML = "Packed File " + (++count) + `: ${s[0]}_${c[0]}.xls`})();
             })
         });
         Object.entries(window.files).forEach(s => {
@@ -310,12 +311,14 @@
             Object.entries(s[1]).forEach(c => {
                 school.file(`${s[0]}_${c[0]}.json`, JSON.stringify(xls_to_json(window.files[s[0]][c[0]])));
                 console.log("Packed File " + (++count) + `: ${s[0]}_${c[0]}.json`);
+                (async ()=>{document.getElementById("pack_log").innerHTML = "Packed File " + (++count) + `: ${s[0]}_${c[0]}.json`})();
             })
         });
         zip.generateAsync({type:"blob"})
         .then(content => {
             saveAs(content, "files.zip");
         });
+        (async ()=>{document.getElementById("pack_log").innerHTML = "Files Downloaded.`})();
     }
     </script>
     <script>if(prompt("Please enter the password: ") == "pascalacsap") document.body.style.display = "block";</script>
