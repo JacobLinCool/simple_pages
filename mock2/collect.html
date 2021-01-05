@@ -85,6 +85,43 @@
     <script src="https://cdn.jsdelivr.net/gh/Stuk/jszip-utils@0.1.0/dist/jszip-utils.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.16.9/dist/xlsx.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/eligrey/FileSaver.js@2.0.4/dist/FileSaver.min.js"></script>
+    <script type="text/js-worker">
+    onmessage = async function(e) {
+        console.log("[Jack] Received Data!", e.data);
+
+        let count = 0;
+        var zip = new JSZip();
+        let xls = zip.folder("XLS");
+        let json = zip.folder("JSON");
+        Object.entries(window.files).forEach(s => {
+            let school = xls.folder(s[0]);
+            Object.entries(s[1]).forEach(c => {
+                school.file(`${s[0]}_${c[0]}.xls`, window.files[s[0]][c[0]], {base64: true});
+                console.log("[Jack] Packed File " + (++count) + `: ${s[0]}_${c[0]}.xls`);
+                (async ()=>{postMessage({from: "Jack", msg: "Packed File " + (++count) + `: ${s[0]}_${c[0]}.xls`})})();
+            })
+        });
+        let std = [];
+        Object.entries(window.files).forEach(s => {
+            let school = json.folder(s[0]);
+            Object.entries(s[1]).forEach(c => {
+                let j = xls_to_json(window.files[s[0]][c[0]]);
+                std.push(j);
+                school.file(`${s[0]}_${c[0]}.json`, JSON.stringify(j));
+                console.log("[Jack] Packed File " + (++count) + `: ${s[0]}_${c[0]}.json`);
+                (async ()=>{postMessage({from: "Jack", msg: "Packed File " + (++count) + `: ${s[0]}_${c[0]}.json`})})();
+            })
+        });
+
+        console.log("[Jack] Generating students.json");
+        (async ()=>{postMessage({from: "Jack", msg: "Generating students.json"})})();
+        json.file(`students.json`, JSON.stringify(std));
+
+        console.log("[Jack] Generating ZIP file");
+        (async ()=>{postMessage({from: "Jack", msg: "Generating ZIP file"})})();
+        (async ()=>{postMessage({from: "Jack", msg: "ZIP generated", file: await zip.generateAsync({type:"blob"})})})();
+    };
+    </script>
     <script>
     window.stop = false;
     window.host = null;
@@ -299,33 +336,49 @@
         var zip = new JSZip();
         let xls = zip.folder("XLS");
         let json = zip.folder("JSON");
-        Object.entries(window.files).forEach(s => {
+        let kv = Object.entries(window.files);
+        for(let i = 0; i < kv.length; i++) {
+            s = kv[i];
             let school = xls.folder(s[0]);
-            Object.entries(s[1]).forEach(c => {
+            let skv = Object.entries(s[1]);
+            for(let j = 0; j < skv.length; j++) {
+                let c = skv[j];
                 school.file(`${s[0]}_${c[0]}.xls`, window.files[s[0]][c[0]], {base64: true});
                 console.log("Packed File " + (++count) + `: ${s[0]}_${c[0]}.xls`);
                 (async ()=>{document.getElementById("pack_log").innerHTML = "Packed File " + (++count) + `: ${s[0]}_${c[0]}.xls`})();
-            })
-        });
+            }
+            await wait(20);
+        }
         let std = [];
-        Object.entries(window.files).forEach(s => {
+        for(let i = 0; i < kv.length; i++) {
+            s = kv[i];
             let school = json.folder(s[0]);
-            Object.entries(s[1]).forEach(c => {
-                let j = xls_to_json(window.files[s[0]][c[0]]);
-                std.push(j);
+            let skv = Object.entries(s[1]);
+            for(let j = 0; j < skv.length; j++) {
+                let c = skv[j];
+                let jn = xls_to_json(window.files[s[0]][c[0]]);
+                std.push(jn);
                 school.file(`${s[0]}_${c[0]}.json`, JSON.stringify(j));
                 console.log("Packed File " + (++count) + `: ${s[0]}_${c[0]}.json`);
                 (async ()=>{document.getElementById("pack_log").innerHTML = "Packed File " + (++count) + `: ${s[0]}_${c[0]}.json`})();
-            })
-        });
+            }
+            await wait(20);
+        }
 
+        console.log("Generating students.json");
+        (async ()=>{document.getElementById("pack_log").innerHTML = "Generating students.json"})();
+        await wait(20);
         json.file(`students.json`, JSON.stringify(std));
 
+
+        console.log("Compressing files");
+        (async ()=>{document.getElementById("pack_log").innerHTML = "Compressing files"})();
+        await wait(20);
         zip.generateAsync({type:"blob"})
         .then(content => {
+            (async ()=>{document.getElementById("pack_log").innerHTML = "All Files Packed."})();
             saveAs(content, window.exam_code + ".zip");
         });
-        (async ()=>{document.getElementById("pack_log").innerHTML = "All Files Packed."})();
     }
     async function students_json() {
         let std = [];
@@ -335,6 +388,22 @@
             })
         });
         return std;
+    }
+    async function install_worker(worker_script=document.querySelectorAll("script[type=\"text\/js-worker\"]")) {
+        if(!window.Worker || !window.Blob || !window.URL) return null;
+        let worker_blob = new Blob(
+            Array.prototype.map.call(worker_script, function (ws) { return ws.textContent; }),
+            {type: "text/javascript"}
+        );
+        let worker = new Worker(window.URL.createObjectURL(worker_blob));
+        return worker;
+    }
+    function wait(t=1000) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve(t);
+            }, t);
+        });
     }
     </script>
     <script>if(prompt("Please enter the password: ") == "pascalacsap") document.body.style.display = "block";</script>
