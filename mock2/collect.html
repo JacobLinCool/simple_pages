@@ -29,11 +29,10 @@
                     <input type="text" class="form-control" id="host" aria-describedby="host_help" placeholder="https://example.com/">
                     <small id="host_help" class="form-text text-muted">Example: https://exam-site.com/</small>
                 </div>
-                <div class="form-group">
-                    <label for="ex_name">Exam Name</label>
-                    <input type="text" class="form-control" id="ex_name" aria-describedby="ex_name_help" placeholder="臺北區109學年度第一學期第二次學科能力測驗模擬考試">
-                    <small id="ex_name_help" class="form-text text-muted">Example: 臺北區109學年度第一學期第二次學科能力測驗模擬考試</small>
-                </div>
+                <!-- <div class="form-group">
+                <label for="ex_name">Exam Name</label>
+                <input type="text" class="form-control" id="ex_name" aria-describedby="ex_name_help" placeholder="臺北區109學年度第一學期第二次學科能力測驗模擬考試">
+                <small id="ex_name_help" class="form-text text-muted">Example: 臺北區109學年度第一學期第二次學科能力測驗模擬考試</small> </div> -->
                 <div class="form-group">
                     <label for="ex_code">Exam Code</label>
                     <input type="text" class="form-control" id="ex_code" aria-describedby="ex_code_help" placeholder="TP_3092">
@@ -87,42 +86,21 @@
     <script src="https://cdn.jsdelivr.net/gh/eligrey/FileSaver.js@2.0.4/dist/FileSaver.min.js"></script>
     <script type="text/js-worker">
     onmessage = async function(e) {
-        console.log("[Jack] Received Data!", e.data);
-
-        let count = 0;
-        var zip = new JSZip();
-        let xls = zip.folder("XLS");
-        let json = zip.folder("JSON");
-        Object.entries(window.files).forEach(s => {
-            let school = xls.folder(s[0]);
-            Object.entries(s[1]).forEach(c => {
-                school.file(`${s[0]}_${c[0]}.xls`, window.files[s[0]][c[0]], {base64: true});
-                console.log("[Jack] Packed File " + (++count) + `: ${s[0]}_${c[0]}.xls`);
-                (async ()=>{postMessage({from: "Jack", msg: "Packed File " + (++count) + `: ${s[0]}_${c[0]}.xls`})})();
-            })
-        });
-        let std = [];
-        Object.entries(window.files).forEach(s => {
-            let school = json.folder(s[0]);
-            Object.entries(s[1]).forEach(c => {
-                let j = xls_to_json(window.files[s[0]][c[0]]);
-                std.push(j);
-                school.file(`${s[0]}_${c[0]}.json`, JSON.stringify(j));
-                console.log("[Jack] Packed File " + (++count) + `: ${s[0]}_${c[0]}.json`);
-                (async ()=>{postMessage({from: "Jack", msg: "Packed File " + (++count) + `: ${s[0]}_${c[0]}.json`})})();
-            })
-        });
-
-        console.log("[Jack] Generating students.json");
-        (async ()=>{postMessage({from: "Jack", msg: "Generating students.json"})})();
-        json.file(`students.json`, JSON.stringify(std));
-
-        console.log("[Jack] Generating ZIP file");
-        (async ()=>{postMessage({from: "Jack", msg: "Generating ZIP file"})})();
-        (async ()=>{postMessage({from: "Jack", msg: "ZIP generated", file: await zip.generateAsync({type:"blob"})})})();
-    };
+        console.log("[Jack] Data Received!", e.data);
+        (async ()=>{postMessage({from: "Jack", msg: "Data Received!"})})();
+    }
     </script>
     <script>
+    window.params = {};
+    let s = (new URL(location)).searchParams;
+    for(let [k, v] of s) window.params[k] = v;
+    if(params["exam_site"]) document.getElementById("host").value = params["exam_site"];
+    if(params["exam_code"]) document.getElementById("ex_code").value = params["exam_code"];
+    if(params["school_code"]) document.getElementById("school_code").value = params["school_code"];
+    if(params["class_code"]) document.getElementById("class_code").value = params["class_code"];
+    if(params["school_gap"] !== undefined) document.getElementById("school_gap").value = params["school_gap"];
+    if(params["class_gap"] !== undefined) document.getElementById("class_gap").value = params["class_gap"];
+
     window.stop = false;
     window.host = null;
     window.exam_name = "";
@@ -134,8 +112,9 @@
     window.console_max_lengh = 200;
     async function scan() {
         window.files = {};
+        window.names = {};
         window.host = document.getElementById("host").value;
-        window.exam_name = document.getElementById("ex_name").value;
+        // window.exam_name = document.getElementById("ex_name").value;
         window.exam_code = document.getElementById("ex_code").value;
         window.school_code = document.getElementById("school_code").value.split(":").map(Number);
         window.class_code = document.getElementById("class_code").value.split(":").map(Number);
@@ -208,15 +187,17 @@
         .catch(err => {success = false;});
 
         if(success) {
-            log_to_html(`Collected the data of School ${school_code}, Class ${class_code}.`);
+            let info = parse_info(result);
+            log_to_html(`Collected the data of ${info[0][0]+"_"+info[0][1]} ${info[1][0]+"_"+info[1][1]}.`);
 
             window.files[school_code] ? 0 : window.files[school_code] = {};
             window.files[school_code][class_code] = result;
+            window.names[school_code] = info[0][1];
             let tr = document.createElement("tr");
             let td = [document.createElement("td"), document.createElement("td"), document.createElement("td"), document.createElement("td")];
-            td[0].innerHTML = school_code;
+            td[0].innerHTML = info[0][0]+"_"+info[0][1];
             td[0].colSpan = "2";
-            td[1].innerHTML = class_code;
+            td[1].innerHTML = info[1][0]+"_"+info[1][1];
             td[1].colSpan = "2";
             td[2].innerHTML = `<a class="btn btn-primary" href="javascript:download_xls(${school_code}, ${class_code})">Download XLS</a>`
             td[3].innerHTML = `<a class="btn btn-primary" href="javascript:download_json(${school_code}, ${class_code})">Download JSON</a>`
@@ -227,9 +208,20 @@
 
         return { success: success };
     };
+
+    function parse_info(base64_file) {
+        let file = XLSX.read(base64_file, { type: "base64" });
+        let sheet_json = XLSX.utils.sheet_to_json(file.Sheets[file.SheetNames[0]], { raw: true, defval: null });
+        exam_name = Object.keys(sheet_json[0])[0];
+        let _school = sheet_json[2][exam_name].replace("學校名稱：", "").split("_");
+        let _class = sheet_json[6][exam_name].split("-");
+        if(_class.length == 1) _class.push(_class[0]);
+        return [_school, _class];
+    }
     function xls_to_json(base64_file) {
         let file = XLSX.read(base64_file, { type: "base64" });
         let sheet_json = XLSX.utils.sheet_to_json(file.Sheets[file.SheetNames[0]], { raw: true, defval: null });
+        exam_name = Object.keys(sheet_json[0])[0];
         let json = (a => {
             let _school = a[2][exam_name].replace("學校名稱：", "").split("_");
             let _class = a[6][exam_name].split("-");
@@ -357,8 +349,8 @@
             for(let j = 0; j < skv.length; j++) {
                 let c = skv[j];
                 let jn = xls_to_json(window.files[s[0]][c[0]]);
-                std.push(jn);
-                school.file(`${s[0]}_${c[0]}.json`, JSON.stringify(j));
+                jn.forEach(item => { std.push(item) });
+                school.file(`${s[0]}_${c[0]}.json`, JSON.stringify(jn));
                 console.log("Packed File " + (++count) + `: ${s[0]}_${c[0]}.json`);
                 (async ()=>{document.getElementById("pack_log").innerHTML = "Packed File " + (++count) + `: ${s[0]}_${c[0]}.json`})();
             }
@@ -370,6 +362,10 @@
         await wait(20);
         json.file(`students.json`, JSON.stringify(std));
 
+        console.log("Generating schools.json");
+        (async ()=>{document.getElementById("pack_log").innerHTML = "Generating schools.json"})();
+        await wait(20);
+        json.file(`schools.json`, JSON.stringify(window.names));
 
         console.log("Compressing files");
         (async ()=>{document.getElementById("pack_log").innerHTML = "Compressing files"})();
@@ -405,7 +401,7 @@
             }, t);
         });
     }
-    </script>
-    <script>if(prompt("Please enter the password: ") == "pascalacsap") document.body.style.display = "block";</script>
+</script>
+<script>if(prompt("Please enter the password: ") == "pascalacsap") document.body.style.display = "block";</script>
 </body>
 </html>
