@@ -5,12 +5,12 @@ var firebaseConfig = {
     projectId: "hsnu-1481-website",
     storageBucket: "hsnu-1481-website.appspot.com",
     messagingSenderId: "405025421965",
-    appId: "1:405025421965:web:7b6d32809d1eb939"
-  };
-  firebase.initializeApp(firebaseConfig);
-  var database = firebase.database();
+    appId: "1:405025421965:web:7b6d32809d1eb939",
+};
+firebase.initializeApp(firebaseConfig);
+var database = firebase.database();
 
-  var sname = [
+var sname = [
     "",
     "程琬貽",
     "邱子珆",
@@ -40,89 +40,85 @@ var firebaseConfig = {
     "黃羿齊",
     "詹亦揚",
     "劉益華",
-    ""
-  ];
-
-var jobs = [
-  "",
-  "不用打掃的幹部",  /* 1 */
-  "內掃-黑板＋講桌整理",
-  "內掃-掃教室",
-  "內掃-掃走廊",
-  "外掃-耙落葉",
-  "內掃-掃具櫃＋置物櫃",  /* 6 */
-  "記人的幹部",
-  "內掃-拖教室",
-  "內掃-窗戶",
-  "內掃-拖走廊",
-  "外掃-耙落葉",  /* 11 */
-  "不用打掃的幹部",
-  "內掃-拖教室",
-  "內掃-拖教室",
-  "內掃-回收",
-  "外掃-掃落葉",  /* 16 */
-  "外掃-掃落葉",
-  "管打掃的幹部",
-  "內掃-掃教室",
-  "內掃-回收",
-  "外掃-耙落葉",  /* 21 */
-  "內掃-回收",
-  "內掃-倒垃圾",
-  "外掃-掃落葉",
-  "內掃-倒廚餘",
-  "內掃-回收",  /* 26 */
-  "不用打掃的幹部",
-  "內掃-掃教室",
-  ""
+    "",
 ];
 
+var jobs = [
+    "",
+    "不用打掃的幹部" /* 1 */,
+    "內掃-黑板＋講桌整理",
+    "內掃-掃教室",
+    "內掃-掃走廊",
+    "外掃-耙落葉",
+    "內掃-掃具櫃＋置物櫃" /* 6 */,
+    "記人的幹部",
+    "內掃-拖教室",
+    "內掃-窗戶",
+    "內掃-拖走廊",
+    "外掃-耙落葉" /* 11 */,
+    "不用打掃的幹部",
+    "內掃-拖教室",
+    "內掃-拖教室",
+    "內掃-回收",
+    "外掃-掃落葉" /* 16 */,
+    "外掃-掃落葉",
+    "管打掃的幹部",
+    "內掃-掃教室",
+    "內掃-掃教室",
+    "外掃-耙落葉" /* 21 */,
+    "內掃-回收",
+    "內掃-倒垃圾",
+    "外掃-掃落葉",
+    "內掃-倒廚餘",
+    "內掃-回收" /* 26 */,
+    "不用打掃的幹部",
+    "內掃-回收",
+    "",
+];
 
-function genSeatsChecks() {
-  var seats = document.getElementById("seats");
-  seats.innerHTML = "";
-  for(var i = 0; i < sname.length; i++) {
-    if(sname[i] != "") {
-      seats.innerHTML += `
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="check_${i}">
-                    <label class="custom-control-label" for="check_${i}">${i} 號 ${sname[i]}</label>
-                </div>
-      `;
-    }
-  }
-  for(var i = 0; i < jobs.length; i++) {
-    if(jobs[i] && jobs[i] != "無") {
-      document.getElementById("jobs").innerHTML += `
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="job_${i}">
-                    <label class="custom-control-label" for="job_${i}">${i} 號 ${sname[i]}: ${jobs[i]}</label>
-                </div>
-      `;
-    }
-  }
-}
+var app = new Vue({
+    el: "#app",
+    data() {
+        return {
+            name: sname,
+            job: jobs,
+            chair: new Array(sname.length).fill(true),
+            work: new Array(sname.length).fill(true),
+            comment: "",
+        };
+    },
+    methods: {
+        submit_data() {
+            let btn = this.$refs.submit;
+            btn.disabled = true;
+            btn.innerHTML = "傳送中";
+            let data = {};
+            data.comment = this.comment;
+            data.seats = [];
+            for (let i = 0; i < this.name.length; i++) if (this.name[i] && !this.chair[i]) data.seats.push(i);
 
-function addData() {
-  var btn = document.getElementById("btn");
-  btn.disabled = true;
-  btn.innerHTML = "傳送中";
-  var data = {};
-  data.comment = document.getElementById("comment").value;
-  data.seats = [];
-  for(var i = 0; i < sname.length; i++) {
-    if(sname[i] != "") {
-      if(!document.getElementById("check_"+i).checked) data.seats.push(i);
-    }
-  }
-  data.jobs = [];
-  for(var i = 0; i < jobs.length; i++) {
-    if(jobs[i] != "無" && jobs[i].substring(0,1) == "內") {
-      if(!document.getElementById("job_"+i).checked) data.jobs.push(i);
-    }
-  }
-  var d = new Date();
-  database.ref("CleanChecking/" + d.getFullYear() + "-" + (""+(d.getMonth()+1)).padStart(2, "0") + "-" + (""+d.getDate()).padStart(2, "0") + "-" + Date.now()).set(data).then(()=>{
-    alert("已記錄!");
-    btn.innerHTML = "完成";
-  });
-}
+            data.jobs = [];
+            for (let i = 0; i < this.job.length; i++)
+                if (this.name[i] && this.job[i] != "無" && this.job[i].substring(0, 1) == "內" && !this.work[i])
+                    data.jobs.push(i);
+
+            let d = new Date();
+            database
+                .ref(
+                    "CleanChecking/" +
+                        d.getFullYear() +
+                        "-" +
+                        ("" + (d.getMonth() + 1)).padStart(2, "0") +
+                        "-" +
+                        ("" + d.getDate()).padStart(2, "0") +
+                        "-" +
+                        Date.now()
+                )
+                .set(data)
+                .then(() => {
+                    alert("已記錄!");
+                    btn.innerHTML = "完成";
+                });
+        },
+    },
+});
